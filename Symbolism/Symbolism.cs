@@ -132,9 +132,11 @@ public abstract class MathObject
     }
 
     public enum ToStringForms { Full, Standard }
+    public static ToStringForms ToStringForm { get => toStringForm; set => toStringForm = value; }
+    public static double? DoubleFloatTolerance { get => doubleFloatTolerance; set => doubleFloatTolerance = value; }
 
-    public ToStringForms ToStringForm = ToStringForms.Full;
-
+    private static ToStringForms toStringForm = ToStringForms.Full;
+    private static double? doubleFloatTolerance = null;
     public virtual string FullForm() => base.ToString();
 
     public virtual string StandardForm() => FullForm();
@@ -312,8 +314,6 @@ public class Integer : Number
 
 public class DoubleFloat(double n) : Number
 {
-    public static double? tolerance = null;
-
     public readonly double val = n;
 
     public override string FullForm() => val.ToString("R");
@@ -328,8 +328,8 @@ public class DoubleFloat(double n) : Number
 
     public override bool Equals(object obj)
     {
-        if (obj is DoubleFloat f&& tolerance.HasValue)
-            return Math.Abs(val - f.val) < tolerance;
+        if (obj is DoubleFloat f&& DoubleFloatTolerance.HasValue)
+            return Math.Abs(val - f.val) < DoubleFloatTolerance;
 
         if (obj is DoubleFloat @float) return val == @float.val;
 
