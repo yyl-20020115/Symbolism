@@ -96,7 +96,7 @@ public static class Extensions
 
         // a x^2 + b x + c == 0
 
-        if (eq.a.AlgebraicExpand().DegreeGpe(new List<MathObject>() { sym }) == 2)
+        if (eq.a.AlgebraicExpand().DegreeGpe([sym]) == 2)
         {
             var a = eq.a.AlgebraicExpand().CoefficientGpe(sym, 2);
             var b = eq.a.AlgebraicExpand().CoefficientGpe(sym, 1);

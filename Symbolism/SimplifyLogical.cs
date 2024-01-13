@@ -24,19 +24,11 @@ public static class Extensions
         return ls;
     }
 
-    public static MathObject SimplifyLogical(this MathObject expr)
-    {
-
-        if (expr is And a&& a.args.HasDuplicates())
-            return And.FromRange(a.args.RemoveDuplicates());
-                    
-        if (expr is Or o && o.args.HasDuplicates())
-            return
-                Or.FromRange(o.args.RemoveDuplicates())
-                .SimplifyLogical();
-
-        if (expr is Or o2) return o2.Map(elt => elt.SimplifyLogical());
-
-        return expr;
-    }
+    public static MathObject SimplifyLogical(this MathObject expr) 
+        => expr is And a && a.args.HasDuplicates()
+            ? (global::Symbolism.MathObject)And.FromRange(a.args.RemoveDuplicates())
+            : expr is Or o && o.args.HasDuplicates()
+            ? Or.FromRange(o.args.RemoveDuplicates())
+                .SimplifyLogical()
+            : expr is Or o2 ? o2.Map(elt => elt.SimplifyLogical()) : expr;
 }

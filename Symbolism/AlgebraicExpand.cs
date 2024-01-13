@@ -35,12 +35,12 @@ public static class Extensions
                         return u;
                 }
 
-            case Function u_:
+            case Function f:
                 {
                     return new Function(
-                        u_.name,
-                        u_.proc,
-                        u_.args.ConvertAll(elt => elt.AlgebraicExpand()))
+                        f.name,
+                        f.proc,
+                        f.args.ConvertAll(elt => elt.AlgebraicExpand()))
                     .Simplify();
                 }
 

@@ -416,10 +416,8 @@ public static class Rational
 
         if (u is Integer integer) return integer;
 
-        if (u is Fraction)
+        if (u is Fraction u_)
         {
-            var u_ = u as Fraction;
-
             //return
             //    Numerator(u_.numerator).val
             //    *
@@ -442,10 +440,8 @@ public static class Rational
 
         if (u is Integer) return new Integer(1);
 
-        if (u is Fraction)
+        if (u is Fraction u_)
         {
-            var u_ = u as Fraction;
-
             return
                 Denominator(u_.numerator)
                 *
@@ -461,29 +457,25 @@ public static class Rational
         // a d / b d + c b / b d
         // (a d + c b) / (b d)
 
-        new Fraction(
+        new (
             Numerator(v) * Denominator(w) + Numerator(w) * Denominator(v),
             Denominator(v) * Denominator(w));
     
     public static Fraction EvaluateDifference(MathObject v, MathObject w) =>
-        new Fraction(
+        new (
             Numerator(v) * Denominator(w) - Numerator(w) * Denominator(v),
             Denominator(v) * Denominator(w));
 
     public static Fraction EvaluateProduct(MathObject v, MathObject w) => 
-        new Fraction(
+        new (
             Numerator(v) * Numerator(w),
             Denominator(v) * Denominator(w));
 
-    public static MathObject EvaluateQuotient(MathObject v, MathObject w)
-    {
-        if (Numerator(w).val == 0) return new Undefined();
-
-        return
-            new Fraction(
+    public static MathObject EvaluateQuotient(MathObject v, MathObject w) => Numerator(w).val == 0
+            ? new Undefined()
+            : new Fraction(
                 Numerator(v) * Denominator(w),
                 Numerator(w) * Denominator(v));
-    }
 
     public static MathObject EvaluatePower(MathObject v, BigInteger n)
     {
@@ -597,18 +589,16 @@ public class Undefined : MathObject { }
 
 public static class MiscUtils { }
 
-public class Symbol : MathObject
+public class Symbol(string str) : MathObject
 {
-    public readonly String name;
-
-    public Symbol(String str) { name = str; }
+    public readonly string name = str;
 
     public override string FullForm() => name;
 
     public override int GetHashCode() => name.GetHashCode();
 
-    public override bool Equals(Object obj) =>
-        obj is Symbol && name == (obj as Symbol).name;
+    public override bool Equals(object o) =>
+        o is Symbol s && name == s.name;
 }
 
 public static class ListConstructor
@@ -639,29 +629,22 @@ public static class ListUtils
     }
 }
 
-public class Function : MathObject
+public class Function(string name, Function.Proc proc, IEnumerable<MathObject> args) : MathObject
 {
     public delegate MathObject Proc(params MathObject[] ls);
 
-    public readonly String name;
+    public readonly String name = name;
 
-    public readonly Proc proc;
+    public readonly Proc proc = proc;
             
-    public readonly ImmutableList<MathObject> args;
+    public readonly ImmutableList<MathObject> args = ImmutableList.CreateRange(args);
 
-    public Function(string name, Proc proc, IEnumerable<MathObject> args)
-    {
-        this.name = name;
-        this.proc = proc;
-        this.args = ImmutableList.CreateRange(args);
-    }
-            
-    public override bool Equals(object obj) =>
-        GetType() == obj.GetType() &&
-        name == (obj as Function).name &&
-        ListUtils.Equal(args, ((Function)obj).args);
+    public override bool Equals(object o) =>
+        GetType() == o.GetType() && o is Function f && 
+        name == f.name &&
+        ListUtils.Equal(args, f.args);
 
-    public MathObject Simplify() => proc == null ? this : proc(args.ToArray());
+    public MathObject Simplify() => proc == null ? this : proc([.. args]);
 
     public override string FullForm() => $"{name}({string.Join(", ", args)})";
 
@@ -685,9 +668,9 @@ public class And : Function
 {
     static MathObject AndProc(MathObject[] ls)
     {
-        if (ls.Count() == 0) return true;
+        if (ls.Length == 0) return true;
 
-        if (ls.Count() == 1) return ls.First();
+        if (ls.Length == 1) return ls.First();
 
         if (ls.Any(elt => elt == false)) return false;
 
@@ -731,7 +714,7 @@ public class Or : Function
 {
     static MathObject OrProc(params MathObject[] ls)
     {
-        if (ls.Count() == 1) return ls.First();
+        if (ls.Length == 1) return ls.First();
 
         // 10 || false || 20   ->   10 || 20
 
@@ -878,7 +861,7 @@ public static class OrderRelation
                         string.Compare(u_.name, v_.name) < 0;
                 }
 
-            case Number _ when !(v is Number):
+            case Number _ when v is not Number:
                 return true;
             case Product _ when v is Power || v is Sum || v is Function || v is Symbol:
                 return Compare(u, new Product(v));
@@ -900,12 +883,10 @@ public static class OrderRelation
     }
 }
 
-public class Power : MathObject
+public class Power(MathObject a, MathObject b) : MathObject
 {
-    public readonly MathObject bas;
-    public readonly MathObject exp;
-
-    public Power(MathObject a, MathObject b) { bas = a; exp = b; }
+    public readonly MathObject bas = a;
+    public readonly MathObject exp = b;
 
     public override string FullForm() =>
         string.Format("{0} ^ {1}",
@@ -997,11 +978,9 @@ public class Power : MathObject
     public override int GetHashCode() => new { bas, exp }.GetHashCode();
 }
 
-public class Product : MathObject
+public class Product(params MathObject[] ls) : MathObject
 {
-    public readonly ImmutableList<MathObject> elts;
-            
-    public Product(params MathObject[] ls) => elts = ImmutableList.Create(ls);
+    public readonly ImmutableList<MathObject> elts = ImmutableList.Create(ls);
 
     public static Product FromRange(IEnumerable<MathObject> ls) => new Product(ls.ToArray());
 
@@ -1174,11 +1153,9 @@ public class Product : MathObject
         Product.FromRange(elts.Select(proc)).Simplify();
 }
 
-public class Sum : MathObject
+public class Sum(params MathObject[] ls) : MathObject
 {
-    public readonly ImmutableList<MathObject> elts;
-
-    public Sum(params MathObject[] ls) { elts = ImmutableList.Create(ls); }
+    public readonly ImmutableList<MathObject> elts = ImmutableList.Create(ls);
 
     public static Sum FromRange(IEnumerable<MathObject> ls) => new Sum(ls.ToArray());
 
@@ -1335,11 +1312,9 @@ public class Sum : MathObject
         Sum.FromRange(elts.Select(proc)).Simplify();
 }
 
-class Difference : MathObject
+class Difference(params MathObject[] ls) : MathObject
 {
-    public readonly ImmutableList<MathObject> elts;
-
-    public Difference(params MathObject[] ls) => elts = ImmutableList.Create(ls);
+    public readonly ImmutableList<MathObject> elts = ImmutableList.Create(ls);
 
     public MathObject Simplify()
     {
@@ -1351,11 +1326,9 @@ class Difference : MathObject
     }
 }
 
-class Quotient : MathObject
+class Quotient(params MathObject[] ls) : MathObject
 {
-    public readonly ImmutableList<MathObject> elts;
-            
-    public Quotient(params MathObject[] ls) => elts = ImmutableList.Create(ls);
+    public readonly ImmutableList<MathObject> elts = ImmutableList.Create(ls);
 
     public MathObject Simplify() => elts[0] * (elts[1] ^ -1);
 }

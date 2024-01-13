@@ -26,8 +26,7 @@
                 case Power p:
                     return p.bas.RationalizeExpression() ^ p.exp;
                 case Product t:
-                    return
-                                    t.Map(elt => elt.RationalizeExpression());
+                    return t.Map(elt => elt.RationalizeExpression());
                 case Sum s:
                     {
                         var f = s.elts[0];

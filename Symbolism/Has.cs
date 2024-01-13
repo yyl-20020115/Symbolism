@@ -5,9 +5,9 @@ namespace Symbolism.Has;
 
 public static class Extensions
 {
-    public static bool Has(this MathObject obj, MathObject a) => obj == a
+    public static bool Has(this MathObject o, MathObject a) => o == a
             ? true
-            : obj switch
+            : o switch
             {
                 Equation e => e.a.Has(a) || e.b.Has(a),
                 Power power => power.bas.Has(a) || power.exp.Has(a),
@@ -17,8 +17,8 @@ public static class Extensions
                 _ => false
             };
 
-    public static bool Has(this MathObject obj, Func<MathObject, bool> proc) => proc(obj) 
-        | obj switch
+    public static bool Has(this MathObject o, Func<MathObject, bool> proc) => proc(o) 
+        | o switch
             {
                 Equation e => e.a.Has(proc) || e.b.Has(proc),
                 Power p => p.bas.Has(proc) || p.exp.Has(proc),
