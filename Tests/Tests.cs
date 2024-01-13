@@ -1466,7 +1466,7 @@ public class Tests
 
         // velocity and position at t = 5.00 s
 
-        DoubleFloat.DoubleFloatTolerance = 0.000000001;
+        MathObject.DoubleFloatTolerance = 0.000000001;
 
         eqs
             .EliminateVariables(tB, tC, vC, yB, yD)
@@ -1479,7 +1479,7 @@ public class Tests
             .SubstituteEqLs(vals)
             .AssertEqTo(Or(yD == 27.499999999, yD == 27.499999999));
 
-        DoubleFloat.DoubleFloatTolerance = null;
+        MathObject.DoubleFloatTolerance = null;
     }
 
     [Fact]
@@ -1712,7 +1712,7 @@ public class Tests
         var zeros = new List<Equation>() { ax == 0, yC == 0 };
         var vals = new List<Equation>() { yA == 45, vA == 20, thA == (30).ToRadians(), ay == -9.8, Pi == Math.PI };
 
-        DoubleFloat.DoubleFloatTolerance = 0.00001;
+        MathObject.DoubleFloatTolerance = 0.00001;
 
         eqs
             .EliminateVariables(vC, vxA, vxC, vyC, vyA)
@@ -1747,7 +1747,7 @@ public class Tests
             .SubstituteEqLs(vals)
             .AssertEqTo(Or(vC == 35.805027579936315, vC == 35.805027579936322));
 
-        DoubleFloat.DoubleFloatTolerance = null;
+        MathObject.DoubleFloatTolerance = null;
     }
 
     [Fact]
@@ -1798,7 +1798,7 @@ public class Tests
 
         var zeros = vals.Where(eq => eq.b == 0).ToList();
 
-        DoubleFloat.DoubleFloatTolerance = 0.00001;
+        MathObject.DoubleFloatTolerance = 0.00001;
 
         eqs
             .EliminateVariables(vxB, vyB, tAB)
@@ -1864,7 +1864,7 @@ public class Tests
             .SubstituteEqLs(vals)
             .AssertEqTo(Or(vyB == 44.271887242357309, vyB == -44.271887242357309));
 
-        DoubleFloat.DoubleFloatTolerance = null;
+        MathObject.DoubleFloatTolerance = null;
     }
 
     [Fact]
@@ -1912,7 +1912,7 @@ public class Tests
 
         var zeros = vals.Where(eq => eq.b == 0).ToList();
 
-        DoubleFloat.DoubleFloatTolerance = 0.00001;
+        MathObject.DoubleFloatTolerance = 0.00001;
 
         eqs
             .SubstituteEqLs(zeros)
@@ -2011,7 +2011,7 @@ public class Tests
                     vyB == -35.010376910485483,
                     vyB != 0));
 
-        DoubleFloat.DoubleFloatTolerance = null;
+        MathObject.DoubleFloatTolerance = null;
     }
 
     [Fact]
@@ -2063,7 +2063,7 @@ public class Tests
 
         var zeros = vals.Where(eq => eq.b == 0).ToList();
 
-        DoubleFloat.DoubleFloatTolerance = 0.00001;
+        MathObject.DoubleFloatTolerance = 0.00001;
 
         eqs
             .SubstituteEqLs(zeros)
@@ -2101,7 +2101,7 @@ public class Tests
                     0.1020408163265306 * Tan(thB) != 0,
                     thB == -0.88760488150470185));
 
-        DoubleFloat.DoubleFloatTolerance = null;
+        MathObject.DoubleFloatTolerance = null;
     }
 
     readonly Func<MathObject, MathObject> SumDifferenceFormulaFunc = elt =>
@@ -2364,7 +2364,7 @@ public class Tests
             yB == yA + vyA * tAB + ay * (tAB ^ 2) / 2
         );
 
-        DoubleFloat.DoubleFloatTolerance = 0.00001;
+        MathObject.DoubleFloatTolerance = 0.00001;
 
         {
             var vals = new List<Equation>() { xA == 0, yA == 0, /* vxA vyA */ vA == 25.0, /* thA == 70.0, */ /* xB == 20.497, */ /* yB */ /* vxB */ vyB == 0, /* tAB */ ax == 0, ay == -9.8, Pi == Math.PI };
@@ -2432,7 +2432,7 @@ public class Tests
             }
         }
 
-        DoubleFloat.DoubleFloatTolerance = null;
+        MathObject.DoubleFloatTolerance = null;
     }
 
     [Fact]
@@ -2477,7 +2477,7 @@ public class Tests
             yB == yA + vyA * tAB + ay * (tAB ^ 2) / 2
         );
 
-        DoubleFloat.DoubleFloatTolerance = 0.00001;
+        MathObject.DoubleFloatTolerance = 0.00001;
 
         {
             var vals = new List<Equation>() { xA == 0, yA == 0, /* vxA vyA */ vA == 300.0, thA == (55).ToRadians(), /* xB yB vxB vyB */ tAB == 42, ax == 0, ay == -9.8, Pi == Math.PI };
@@ -2510,7 +2510,7 @@ public class Tests
             }
         }
 
-        DoubleFloat.DoubleFloatTolerance = null;
+        MathObject.DoubleFloatTolerance = null;
     }
 
     [Fact]
@@ -2579,7 +2579,7 @@ public class Tests
 
         );
 
-        DoubleFloat.DoubleFloatTolerance = 0.00001;
+        MathObject.DoubleFloatTolerance = 0.00001;
 
         {
             var vals = new List<Equation>()
@@ -2599,7 +2599,7 @@ public class Tests
                 .AssertEqTo(thA == new Atan(new Integer(4) / 3));
         }
 
-        DoubleFloat.DoubleFloatTolerance = null;
+        MathObject.DoubleFloatTolerance = null;
     }
 
     [Fact]
@@ -2658,7 +2658,7 @@ public class Tests
             yB == yA + vyA * tAB + ay * (tAB ^ 2) / 2
         );
 
-        DoubleFloat.DoubleFloatTolerance = 0.00001;
+        MathObject.DoubleFloatTolerance = 0.00001;
 
         {
             var vals = new List<Equation>()
@@ -2709,7 +2709,7 @@ public class Tests
             }
         }
 
-        DoubleFloat.DoubleFloatTolerance = null;
+        MathObject.DoubleFloatTolerance = null;
     }
 
     [Fact]
@@ -2773,7 +2773,7 @@ public class Tests
             cleared_by == yB - goal_height
         );
 
-        DoubleFloat.DoubleFloatTolerance = 0.00001;
+        MathObject.DoubleFloatTolerance = 0.00001;
 
         {
             var vals = new List<Equation>()
@@ -2816,7 +2816,7 @@ public class Tests
             }
         }
 
-        DoubleFloat.DoubleFloatTolerance = null;
+        MathObject.DoubleFloatTolerance = null;
     }
 
     [Fact]
@@ -2870,7 +2870,7 @@ public class Tests
 
         );
 
-        DoubleFloat.DoubleFloatTolerance = 0.00001;
+        MathObject.DoubleFloatTolerance = 0.00001;
 
         {
             var vals = new List<Equation>()
@@ -2897,7 +2897,7 @@ public class Tests
             }
         }
 
-        DoubleFloat.DoubleFloatTolerance = null;
+        MathObject.DoubleFloatTolerance = null;
     }
 
     [Fact]
@@ -2989,7 +2989,7 @@ public class Tests
 
         );
 
-        DoubleFloat.DoubleFloatTolerance = 0.00001;
+        MathObject.DoubleFloatTolerance = 0.00001;
 
         {
             var vals = new List<Equation>()
@@ -3129,7 +3129,7 @@ public class Tests
             }
         }
 
-        DoubleFloat.DoubleFloatTolerance = null;
+        MathObject.DoubleFloatTolerance = null;
     }
 
     [Fact]
@@ -3203,7 +3203,7 @@ public class Tests
 
             );
 
-        DoubleFloat.DoubleFloatTolerance = 0.00001;
+        MathObject.DoubleFloatTolerance = 0.00001;
 
         {
             var vals = new List<Equation>()
@@ -3387,7 +3387,7 @@ public class Tests
 
             );
 
-        DoubleFloat.DoubleFloatTolerance = 0.00001;
+        MathObject.DoubleFloatTolerance = 0.00001;
 
         {
             var vals = new List<Equation>()
@@ -3537,7 +3537,7 @@ public class Tests
 
             );
 
-        DoubleFloat.DoubleFloatTolerance = 0.00001;
+        MathObject.DoubleFloatTolerance = 0.00001;
 
         {
             var vals = new List<Equation>()
@@ -3673,7 +3673,7 @@ public class Tests
 
             );
 
-        DoubleFloat.DoubleFloatTolerance = 0.00001;
+        MathObject.DoubleFloatTolerance = 0.00001;
 
         {
             var vals = new List<Equation>()
@@ -3837,7 +3837,7 @@ public class Tests
 
             );
 
-        DoubleFloat.DoubleFloatTolerance = 0.00001;
+        MathObject.DoubleFloatTolerance = 0.00001;
 
         {
             var vals = new List<Equation>()
@@ -3969,7 +3969,7 @@ public class Tests
 
             );
 
-        DoubleFloat.DoubleFloatTolerance = 0.00001;
+        MathObject.DoubleFloatTolerance = 0.00001;
 
         var vals = new List<Equation>
             {
@@ -4116,7 +4116,7 @@ public class Tests
 
             );
 
-        DoubleFloat.DoubleFloatTolerance = 0.00001;
+        MathObject.DoubleFloatTolerance = 0.00001;
 
         {
             var vals = new List<Equation>()
@@ -4243,7 +4243,7 @@ public class Tests
 
             );
 
-        DoubleFloat.DoubleFloatTolerance = 0.00001;
+        MathObject.DoubleFloatTolerance = 0.00001;
 
         {
             var symbolic_vals = new List<Equation>()
@@ -4438,7 +4438,7 @@ public class Tests
 
             );
 
-        DoubleFloat.DoubleFloatTolerance = 0.00001;
+        MathObject.DoubleFloatTolerance = 0.00001;
 
         {
             var vals = new List<Equation>()
@@ -4661,7 +4661,7 @@ public class Tests
 
             );
 
-        DoubleFloat.DoubleFloatTolerance = 0.00001;
+        MathObject.DoubleFloatTolerance = 0.00001;
 
         {
             var vals = new List<Equation>()
@@ -4860,7 +4860,7 @@ public class Tests
             Fy_m2 == m2 * ay_m2
             );
 
-        DoubleFloat.DoubleFloatTolerance = 0.00001;
+        MathObject.DoubleFloatTolerance = 0.00001;
 
         {
             var vals = new List<Equation>()
@@ -4994,7 +4994,7 @@ public class Tests
 
             );
 
-        DoubleFloat.DoubleFloatTolerance = 0.00001;
+        MathObject.DoubleFloatTolerance = 0.00001;
 
         var vals = new List<Equation>()
             {
@@ -5161,7 +5161,7 @@ public class Tests
                 g == 9.8
             };
 
-        DoubleFloat.DoubleFloatTolerance = 0.00001;
+        MathObject.DoubleFloatTolerance = 0.00001;
 
         // a
         eqs
@@ -5229,7 +5229,7 @@ public class Tests
 
             .SubstituteEqLs(numerical_vals);
 
-        DoubleFloat.DoubleFloatTolerance = null;
+        MathObject.DoubleFloatTolerance = null;
 
     }
 
@@ -5289,7 +5289,7 @@ public class Tests
 
             );
 
-        DoubleFloat.DoubleFloatTolerance = 0.00001;
+        MathObject.DoubleFloatTolerance = 0.00001;
 
         // T1
         {

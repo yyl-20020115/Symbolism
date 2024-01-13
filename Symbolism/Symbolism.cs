@@ -97,6 +97,9 @@ public abstract class MathObject
 
     public static MathObject operator -(MathObject a) { return new Difference(a).Simplify(); }
 
+    protected static ToStringForms toStringForm = ToStringForms.Full;
+    protected static double? doubleFloatTolerance = null;
+
     // Precedence is used for printing purposes.
     // Thus, the precedence values below do not necessarily reflect 
     // the C# operator precedence values.
@@ -135,8 +138,6 @@ public abstract class MathObject
     public static ToStringForms ToStringForm { get => toStringForm; set => toStringForm = value; }
     public static double? DoubleFloatTolerance { get => doubleFloatTolerance; set => doubleFloatTolerance = value; }
 
-    private static ToStringForms toStringForm = ToStringForms.Full;
-    private static double? doubleFloatTolerance = null;
     public virtual string FullForm() => base.ToString();
 
     public virtual string StandardForm() => FullForm();
