@@ -183,18 +183,29 @@ namespace Symbolism
 
             if (a is Equation && b is Equation) return (a as Equation).Equals(b);
 
-            if (a is Integer && b is Integer) return ((Integer)a).Equals(b);
-            if (a is DoubleFloat && b is DoubleFloat) return ((DoubleFloat)a).Equals(b);
-            if (a is Symbol && b is Symbol) return ((Symbol)a).Equals(b);
-            if (a is Sum && b is Sum) return ((Sum)a).Equals(b);
-            if (a is Product && b is Product) return ((Product)a).Equals(b);
-            if (a is Fraction && b is Fraction) return ((Fraction)a).Equals(b);
-            if (a is Power && b is Power) return ((Power)a).Equals(b);
-            if (a is Function && b is Function) return ((Function)a).Equals(b);
-
-            if ((((object)a) == null) && (((object)b) == null)) return true;
-
-            if (((object)a) == null) return false;
+            switch (a)
+            {
+                case Integer _ when b is Integer:
+                    return ((Integer)a).Equals(b);
+                case DoubleFloat _ when b is DoubleFloat:
+                    return ((DoubleFloat)a).Equals(b);
+                case Symbol _ when b is Symbol:
+                    return ((Symbol)a).Equals(b);
+                case Sum _ when b is Sum:
+                    return ((Sum)a).Equals(b);
+                case Product _ when b is Product:
+                    return ((Product)a).Equals(b);
+                case Fraction _ when b is Fraction:
+                    return ((Fraction)a).Equals(b);
+                case Power _ when b is Power:
+                    return ((Power)a).Equals(b);
+                case Function _ when b is Function:
+                    return ((Function)a).Equals(b);
+                case null when b is null:
+                    return true;
+                case null:
+                    return false;
+            }
 
             if (((object)b) == null) return false;
 
@@ -313,7 +324,7 @@ namespace Symbolism
             if (obj is DoubleFloat && tolerance.HasValue)
                 return Math.Abs(val - (obj as DoubleFloat).val) < tolerance;
 
-            if (obj is DoubleFloat) return val == ((DoubleFloat)obj).val;
+            if (obj is DoubleFloat @float) return val == @float.val;
 
             return false;
         }
@@ -351,10 +362,11 @@ namespace Symbolism
     public static class Rational
     {
         static BigInteger Div(BigInteger a, BigInteger b)
-        { BigInteger rem; return BigInteger.DivRem(a, b, out rem); }
+        {
+            return BigInteger.DivRem(a, b, out _); }
                 
         static BigInteger Rem(BigInteger a, BigInteger b)
-        { BigInteger rem; BigInteger.DivRem(a, b, out rem); return rem; }
+        { _ = BigInteger.DivRem(a, b, out BigInteger rem); return rem; }
                 
         static BigInteger Gcd(BigInteger a, BigInteger b)
         {
@@ -372,18 +384,17 @@ namespace Symbolism
         {
             if (u is Integer) return u;
 
-            if (u is Fraction)
+            if (u is Fraction u_)
             {
-                var u_ = (Fraction)u;
                 var n = u_.numerator.val;
                 var d = u_.denominator.val;
-                                
+
                 if (Rem(n, d) == 0) return Div(n, d);
 
                 var g = Gcd(n, d);
-                                
+
                 if (d > 0) return new Fraction(Div(n, g), Div(d, g));
-                                
+
                 if (d < 0) return new Fraction(Div(-n, g), Div(-d, g));
             }
 
@@ -396,7 +407,7 @@ namespace Symbolism
             // (a / b) * (d / c)
             // (a * d) / (b * c)
 
-            if (u is Integer) return (Integer)u;
+            if (u is Integer integer) return integer;
 
             if (u is Fraction)
             {
@@ -495,76 +506,78 @@ namespace Symbolism
         {
             if (u is Integer) return u;
 
-            if (u is Fraction)
-                if (Denominator((Fraction)u).val == 0) return new Undefined();
-                else return u;
-
-            if (u is Sum && ((Sum)u).elts.Count == 1)
-            { return SimplifyRNERec(((Sum)u).elts[0]); }
-
-            if (u is Difference && ((Difference)u).elts.Count == 1)
+            switch (u)
             {
-                var v = SimplifyRNERec(((Difference)u).elts[0]);
+                case Fraction _:
+                    if (Denominator((Fraction)u).val == 0) return new Undefined();
+                    else return u;
+                case Sum _ when ((Sum)u).elts.Count == 1:
+                    return SimplifyRNERec(((Sum)u).elts[0]);
+                case Difference _ when ((Difference)u).elts.Count == 1:
+                    {
+                        var v = SimplifyRNERec(((Difference)u).elts[0]);
 
-                if (v == new Undefined()) return v;
-                                
-                return EvaluateProduct(-1, v);
+                        if (v == new Undefined()) return v;
+
+                        return EvaluateProduct(-1, v);
+                    }
+
+                case Sum sum when sum.elts.Count == 2:
+                    {
+                        var v = SimplifyRNERec(sum.elts[0]);
+                        var w = SimplifyRNERec(sum.elts[1]);
+
+                        if (v == new Undefined() || w == new Undefined())
+                            return new Undefined();
+
+                        return EvaluateSum(v, w);
+                    }
+
+                case Product product when product.elts.Count == 2:
+                    {
+                        var v = SimplifyRNERec(product.elts[0]);
+                        var w = SimplifyRNERec(product.elts[1]);
+
+                        if (v == new Undefined() || w == new Undefined())
+                            return new Undefined();
+
+                        return EvaluateProduct(v, w);
+                    }
+
+                case Difference difference when difference.elts.Count == 2:
+                    {
+                        var v = SimplifyRNERec(difference.elts[0]);
+                        var w = SimplifyRNERec(difference.elts[1]);
+
+                        if (v == new Undefined() || w == new Undefined())
+                            return new Undefined();
+
+                        return EvaluateDifference(v, w);
+                    }
+
+                //case Fraction fraction:
+                //    {
+                //        var v = SimplifyRNERec(fraction.numerator);
+                //        var w = SimplifyRNERec(fraction.denominator);
+
+                //        if (v == new Undefined() || w == new Undefined())
+                //            return new Undefined();
+
+                //        return EvaluateQuotient(v, w);
+                //    }
+
+                case Power power:
+                    {
+                        var v = SimplifyRNERec(power.bas);
+
+                        if (v == new Undefined()) return v;
+
+                        return EvaluatePower(v, ((Integer)power.exp).val);
+                    }
+
+                default:
+                    throw new Exception();
             }
-
-            if (u is Sum && ((Sum)u).elts.Count == 2)
-            {
-                var v = SimplifyRNERec(((Sum)u).elts[0]);
-                var w = SimplifyRNERec(((Sum)u).elts[1]);
-
-                if (v == new Undefined() || w == new Undefined())
-                    return new Undefined();
-
-                return EvaluateSum(v, w);
-            }
-
-            if (u is Product && ((Product)u).elts.Count == 2)
-            {
-                var v = SimplifyRNERec(((Product)u).elts[0]);
-                var w = SimplifyRNERec(((Product)u).elts[1]);
-
-                if (v == new Undefined() || w == new Undefined())
-                    return new Undefined();
-
-                return EvaluateProduct(v, w);
-            }
-
-            if (u is Difference && ((Difference)u).elts.Count == 2)
-            {
-                var v = SimplifyRNERec(((Difference)u).elts[0]);
-                var w = SimplifyRNERec(((Difference)u).elts[1]);
-
-                if (v == new Undefined() || w == new Undefined())
-                    return new Undefined();
-
-                return EvaluateDifference(v, w);
-            }
-
-            if (u is Fraction)
-            {
-                var v = SimplifyRNERec(((Fraction)u).numerator);
-                var w = SimplifyRNERec(((Fraction)u).denominator);
-
-                if (v == new Undefined() || w == new Undefined())
-                    return new Undefined();
-
-                return EvaluateQuotient(v, w);
-            }
-
-            if (u is Power)
-            {
-                var v = SimplifyRNERec(((Power)u).bas);
-
-                if (v == new Undefined()) return v;
-
-                return EvaluatePower(v, ((Integer)((Power)u).exp).val);
-            }
-
-            throw new Exception();
         }
 
         public static MathObject SimplifyRNE(MathObject u)
@@ -590,7 +603,7 @@ namespace Symbolism
         public override int GetHashCode() => name.GetHashCode();
 
         public override bool Equals(Object obj) =>
-            obj is Symbol ? name == (obj as Symbol).name : false;
+            obj is Symbol && name == (obj as Symbol).name;
     }
 
     public static class ListConstructor
@@ -607,7 +620,7 @@ namespace Symbolism
         
         public static ImmutableList<MathObject> Cdr(this ImmutableList<MathObject> obj) => obj.RemoveAt(0);
 
-        public static bool equal(ImmutableList<MathObject> a, ImmutableList<MathObject> b)
+        public static bool Equal(ImmutableList<MathObject> a, ImmutableList<MathObject> b)
         {
             if (a.Count == 0 && b.Count == 0) return true;
 
@@ -615,7 +628,7 @@ namespace Symbolism
 
             if (b.Count == 0) return false;
 
-            if (a[0] == b[0]) return equal(a.Cdr(), b.Cdr());
+            if (a[0] == b[0]) return Equal(a.Cdr(), b.Cdr());
 
             return false;
         }
@@ -641,7 +654,7 @@ namespace Symbolism
         public override bool Equals(object obj) =>
             GetType() == obj.GetType() &&
             name == (obj as Function).name &&
-            ListUtils.equal(args, ((Function)obj).args);
+            ListUtils.Equal(args, ((Function)obj).args);
 
         public MathObject Simplify() => proc == null ? this : proc(args.ToArray());
 
@@ -757,7 +770,7 @@ namespace Symbolism
 
         public static MathObject Term(this MathObject u)
         {
-            if (u is Product && ((Product)u).elts[0] is Number)
+            if (u is Product product && product.elts[0] is Number)
                 return Product.FromRange((u as Product).elts.Cdr());
                 // return (u as Product).Cdr()
 
@@ -784,100 +797,101 @@ namespace Symbolism
 
         public static bool Compare(MathObject u, MathObject v)
         {
-            if (u is DoubleFloat && v is DoubleFloat) return ((DoubleFloat)u).val < ((DoubleFloat)v).val;
+            if (u is DoubleFloat @float && v is DoubleFloat float1)
+            {
+                return @float.val < float1.val;
+            }
 
             // if (u is DoubleFloat && v is Integer) return ((DoubleFloat)u).val < ((Integer)v).val;
 
-            if (u is DoubleFloat && v is Integer) return ((DoubleFloat)u).val < ((double)((Integer)v).val);
+            if (u is DoubleFloat float2 && v is Integer integer) return float2.val < ((double)integer.val);
 
-            if (u is DoubleFloat && v is Fraction) return
-                ((DoubleFloat)u).val < ((double)((Fraction)v).numerator.val) / ((double)((Fraction)v).denominator.val);
+            if (u is DoubleFloat float3 && v is Fraction fraction) return
+                float3.val < ((double)fraction.numerator.val) / ((double)fraction.denominator.val);
 
-            if (u is Integer && v is DoubleFloat) return ((double)((Integer)u).val) < ((DoubleFloat)v).val;
-
-            if (u is Fraction && v is DoubleFloat) return
-                ((double)((Fraction)u).numerator.val) / ((double)((Fraction)u).denominator.val) < ((DoubleFloat)v).val;
-
-            if (u is Integer)
-                return Compare(new Fraction((Integer)u, new Integer(1)), v);
-
-            if (v is Integer)
-                return Compare(u, new Fraction((Integer)v, new Integer(1)));
-
-            if (u is Fraction && v is Fraction)
+            switch (u)
             {
-                var u_ = (Fraction)u;
-                var v_ = (Fraction)v;
-
-                // a / b   <   c / d
-                //
-                // (a d) / (b d)   <   (c b) / (b d)
-
-                return
-                    (u_.numerator.val * v_.denominator.val)
-                    <
-                    (v_.numerator.val * u_.denominator.val);
+                case Integer _ when v is DoubleFloat float5:
+                    return (double)((Integer)u).val < float5.val;
+                case Fraction _ when v is DoubleFloat float4:
+                    return
+                                (double)((Fraction)u).numerator.val / (double)((Fraction)u).denominator.val < float4.val;
+                case Integer _:
+                    return Compare(new Fraction((Integer)u, new Integer(1)), v);
             }
 
-            if (u is Symbol && v is Symbol)
-                return
-                    String.Compare(
-                        ((Symbol)u).name,
-                        ((Symbol)v).name) < 0;
+            if (v is Integer integer1)
+                return Compare(u, new Fraction(integer1, new Integer(1)));
 
-            if (u is Product && v is Product)
-                return O3(
-                    (u as Product).elts.Reverse(),
-                    (v as Product).elts.Reverse());
-                                    
-            if (u is Sum && v is Sum)
-                return O3(
-                    (u as Sum).elts.Reverse(),
-                    (v as Sum).elts.Reverse());
-
-            if (u is Power && v is Power)
+            switch (u)
             {
-                var u_ = (Power)u;
-                var v_ = (Power)v;
+                case Fraction _ when v is Fraction fraction1:
+                    {
+                        var u_ = (Fraction)u;
+                        var v_ = fraction1;
 
-                return (u_.bas == v_.bas) ?
-                    Compare(u_.exp, v_.exp) :
-                    Compare(u_.bas, v_.bas);
+                        // a / b   <   c / d
+                        //
+                        // (a d) / (b d)   <   (c b) / (b d)
+
+                        return
+                            u_.numerator.val * v_.denominator.val
+                            <
+                            v_.numerator.val * u_.denominator.val;
+                    }
+
+                case Symbol _ when v is Symbol symbol:
+                    return
+                                    string.Compare(
+                                        ((Symbol)u).name,
+                                        symbol.name) < 0;
+                case Product _ when v is Product:
+                    return O3(
+                                    (u as Product).elts.Reverse(),
+                                    (v as Product).elts.Reverse());
+                case Sum _ when v is Sum:
+                    return O3(
+                                    (u as Sum).elts.Reverse(),
+                                    (v as Sum).elts.Reverse());
+                case Power _ when v is Power power:
+                    {
+                        var u_ = (Power)u;
+                        var v_ = power;
+
+                        return u_.bas == v_.bas ?
+                            Compare(u_.exp, v_.exp) :
+                            Compare(u_.bas, v_.bas);
+                    }
+
+                case Function _ when v is Function function:
+                    {
+                        var u_ = (Function)u;
+                        var v_ = function;
+
+                        return u_.name == v_.name ?
+                            O3(u_.args, v_.args) :
+                            string.Compare(u_.name, v_.name) < 0;
+                    }
+
+                case Number _ when !(v is Number):
+                    return true;
+                case Product _ when v is Power || v is Sum || v is Function || v is Symbol:
+                    return Compare(u, new Product(v));
+                case Power _ when v is Sum || v is Function || v is Symbol:
+                    return Compare(u, new Power(v, new Integer(1)));
+                case Sum _ when v is Function || v is Symbol:
+                    return Compare(u, new Sum(v));
+                case Function _ when v is Symbol symbol1:
+                    {
+                        var u_ = (Function)u;
+                        var v_ = symbol1;
+
+                        return u_.name != v_.name && Compare(new Symbol(u_.name), v);
+                    }
+
+                default:
+                    return !Compare(v, u);
             }
-
-            if (u is Function && v is Function)
-            {
-                var u_ = (Function)u;
-                var v_ = (Function)v;
-
-                return u_.name == v_.name ?
-                    O3(u_.args, v_.args) :
-                    String.Compare(u_.name, v_.name) < 0;
-            }
-
-            if (u is Number && !(v is Number)) return true;
-
-            if (u is Product &&
-                (v is Power || v is Sum || v is Function || v is Symbol))
-                return Compare(u, new Product(v));
-
-            if (u is Power && (v is Sum || v is Function || v is Symbol))
-                return Compare(u, new Power(v, new Integer(1)));
-
-            if (u is Sum && (v is Function || v is Symbol))
-                return Compare(u, new Sum(v));
-
-            if (u is Function && v is Symbol)
-            {
-                var u_ = (Function)u;
-                var v_ = (Symbol)v;
-
-                return u_.name == v_.name ?
-                    false :
-                    Compare(new Symbol(u_.name), v);
-            }
-
-            return !Compare(v, u);
         }
     }
 
@@ -937,25 +951,24 @@ namespace Symbolism
             if ((v is Integer || v is Fraction) && n is Integer)
                 return Rational.SimplifyRNE(new Power(v, n));
 
-            if (v is DoubleFloat && w is Integer)
-                return new DoubleFloat(Math.Pow(((DoubleFloat)v).val, (double) ((Integer)w).val));
+            if (v is DoubleFloat @float && w is Integer integer)
+                return new DoubleFloat(Math.Pow(@float.val, (double) integer.val));
 
-            if (v is DoubleFloat && w is Fraction)
-                return new DoubleFloat(Math.Pow(((DoubleFloat)v).val, ((Fraction)w).ToDouble().val));
-
-            if (v is Integer && w is DoubleFloat)
-                return new DoubleFloat(Math.Pow((double)((Integer)v).val, ((DoubleFloat)w).val));
-
-            if (v is Fraction && w is DoubleFloat)
-                return new DoubleFloat(Math.Pow(((Fraction)v).ToDouble().val, ((DoubleFloat)w).val));
-
-            if (v is Power && w is Integer)
-            { return ((Power)v).bas ^ (((Power)v).exp * w); }
-
-            if (v is Product && w is Integer)
-                return (v as Product).Map(elt => elt ^ w);
-            
-            return new Power(v, w);
+            switch (v)
+            {
+                case DoubleFloat _ when w is Fraction fraction:
+                    return new DoubleFloat(Math.Pow(((DoubleFloat)v).val, fraction.ToDouble().val));
+                case Integer _ when w is DoubleFloat float1:
+                    return new DoubleFloat(Math.Pow((double)((Integer)v).val, float1.val));
+                case Fraction _ when w is DoubleFloat float2:
+                    return new DoubleFloat(Math.Pow(((Fraction)v).ToDouble().val, float2.val));
+                case Power _ when w is Integer:
+                    return ((Power)v).bas ^ ((Power)v).exp * w;
+                case Product _ when w is Integer:
+                    return (v as Product).Map(elt => elt ^ w);
+                default:
+                    return new Power(v, w);
+            }
         }
 
         public override MathObject Numerator()
@@ -1015,7 +1028,7 @@ namespace Symbolism
         public override int GetHashCode() => elts.GetHashCode();
 
         public override bool Equals(object obj) =>
-            obj is Product && ListUtils.equal(elts, (obj as Product).elts);
+            obj is Product && ListUtils.Equal(elts, (obj as Product).elts);
 
         static ImmutableList<MathObject> MergeProducts(ImmutableList<MathObject> pElts, ImmutableList<MathObject> qElts)
         {
@@ -1034,9 +1047,9 @@ namespace Symbolism
 
             if (res.Count == 1) return MergeProducts(ps, qs).Cons(res[0]);
 
-            if (ListUtils.equal(res, ImList(p, q))) return MergeProducts(ps, qElts).Cons(p);
+            if (ListUtils.Equal(res, ImList(p, q))) return MergeProducts(ps, qElts).Cons(p);
 
-            if (ListUtils.equal(res, ImList(q, p))) return MergeProducts(pElts, qs).Cons(q);
+            if (ListUtils.Equal(res, ImList(q, p))) return MergeProducts(pElts, qs).Cons(q);
 
             throw new Exception();
         }
@@ -1045,11 +1058,11 @@ namespace Symbolism
         {
             double val = 0.0;
 
-            if (b is DoubleFloat) val = a.val * ((DoubleFloat)b).val;
+            if (b is DoubleFloat @float) val = a.val * @float.val;
 
-            if (b is Integer) val = a.val * (double)((Integer)b).val;
+            if (b is Integer integer) val = a.val * (double)integer.val;
 
-            if (b is Fraction) val = a.val * ((Fraction)b).ToDouble().val;
+            if (b is Fraction fraction) val = a.val * fraction.ToDouble().val;
                         
             if (val == 1.0) return ImmutableList.Create<MathObject>();
 
@@ -1060,22 +1073,25 @@ namespace Symbolism
         {
             if (elts.Count == 2)
             {
-                if (elts[0] is Product && elts[1] is Product)
-                    return MergeProducts(
-                        ((Product)elts[0]).elts,
-                        ((Product)elts[1]).elts);
+                switch (elts[0])
+                {
+                    case Product _ when elts[1] is Product product2:
+                        return MergeProducts(
+                                        ((Product)elts[0]).elts,
+                                        product2.elts);
+                    case Product product2:
+                        return MergeProducts(product2.elts, ImList(elts[1]));
+                }
 
-                if (elts[0] is Product) return MergeProducts(((Product)elts[0]).elts, ImList(elts[1]));
-
-                if (elts[1] is Product) return MergeProducts(ImList(elts[0]), ((Product)elts[1]).elts);
+                if (elts[1] is Product product1) return MergeProducts(ImList(elts[0]), product1.elts);
 
                 //////////////////////////////////////////////////////////////////////
 
-                if (elts[0] is DoubleFloat && elts[1] is Number)
-                    return SimplifyDoubleNumberProduct((DoubleFloat)elts[0], (Number)elts[1]);
+                if (elts[0] is DoubleFloat float1 && elts[1] is Number number1)
+                    return SimplifyDoubleNumberProduct(float1, number1);
 
-                if (elts[0] is Number && elts[1] is DoubleFloat)
-                    return SimplifyDoubleNumberProduct((DoubleFloat)elts[1], (Number)elts[0]);
+                if (elts[0] is Number number && elts[1] is DoubleFloat @float)
+                    return SimplifyDoubleNumberProduct(@float, number);
 
                 //////////////////////////////////////////////////////////////////////
 
@@ -1110,10 +1126,10 @@ namespace Symbolism
                 return ImList(p, q);
             }
 
-            if (elts[0] is Product)
+            if (elts[0] is Product product)
                 return
                     MergeProducts(
-                        ((Product)elts[0]).elts,
+                        product.elts,
                         RecursiveSimplify(elts.Cdr()));
 
             return MergeProducts(
@@ -1164,7 +1180,7 @@ namespace Symbolism
         public override int GetHashCode() => elts.GetHashCode();
 
         public override bool Equals(object obj) =>
-            obj is Sum && ListUtils.equal(elts, (obj as Sum).elts);
+            obj is Sum && ListUtils.Equal(elts, (obj as Sum).elts);
 
         static ImmutableList<MathObject> MergeSums(ImmutableList<MathObject> pElts, ImmutableList<MathObject> qElts)
         {
@@ -1183,9 +1199,9 @@ namespace Symbolism
 
             if (res.Count == 1) return MergeSums(ps, qs).Cons(res[0]);
 
-            if (ListUtils.equal(res, ImList(p, q))) return MergeSums(ps, qElts).Cons(p);
+            if (ListUtils.Equal(res, ImList(p, q))) return MergeSums(ps, qElts).Cons(p);
 
-            if (ListUtils.equal(res, ImList(q, p))) return MergeSums(pElts, qs).Cons(q);
+            if (ListUtils.Equal(res, ImList(q, p))) return MergeSums(pElts, qs).Cons(q);
 
             throw new Exception();
         }
@@ -1194,11 +1210,11 @@ namespace Symbolism
         {
             double val = 0.0;
 
-            if (b is DoubleFloat) val = a.val + ((DoubleFloat)b).val;
+            if (b is DoubleFloat @float) val = a.val + @float.val;
 
-            if (b is Integer) val = a.val + (double)((Integer)b).val;
+            if (b is Integer integer) val = a.val + (double)integer.val;
 
-            if (b is Fraction) val = a.val + ((Fraction)b).ToDouble().val;
+            if (b is Fraction fraction) val = a.val + fraction.ToDouble().val;
 
             if (val == 0.0) return ImmutableList.Create<MathObject>();
                         
@@ -1209,28 +1225,30 @@ namespace Symbolism
         {
             if (elts.Count == 2)
             {
-                if (elts[0] is Sum && elts[1] is Sum)
+                if (elts[0] is Sum sum2 && elts[1] is Sum sum3)
                     return MergeSums(
-                        ((Sum)elts[0]).elts,
-                        ((Sum)elts[1]).elts);
+                        sum2.elts,
+                        sum3.elts);
 
-                if (elts[0] is Sum)
+                if (elts[0] is Sum sum1)
                     return MergeSums(
-                        ((Sum)elts[0]).elts,
+                        sum1.elts,
                         ImList(elts[1]));
 
-                if (elts[1] is Sum)
+                if (elts[1] is Sum sums)
                     return MergeSums(
                         ImList(elts[0]),
-                        ((Sum)elts[1]).elts);
+                        sums.elts);
 
                 //////////////////////////////////////////////////////////////////////
 
-                if (elts[0] is DoubleFloat && elts[1] is Number)
-                    return SimplifyDoubleNumberSum((DoubleFloat)elts[0], (Number)elts[1]);
+                if (elts[0] is DoubleFloat float1 && elts[1] is Number number1)
+                    return SimplifyDoubleNumberSum(float1, number1);
 
-                if (elts[0] is Number && elts[1] is DoubleFloat)
-                    return SimplifyDoubleNumberSum((DoubleFloat)elts[1], (Number)elts[0]);
+                if (elts[0] is Number number && elts[1] is DoubleFloat @float)
+                {
+                    return SimplifyDoubleNumberSum(@float, number);
+                }
 
                 //////////////////////////////////////////////////////////////////////
 
@@ -1266,12 +1284,10 @@ namespace Symbolism
                 return ImList(p, q);
             }
 
-            if (elts[0] is Sum)
-                return
-                    MergeSums(
-                        ((Sum)elts[0]).elts, RecursiveSimplify(elts.Cdr()));
-
-            return MergeSums(
+            return elts[0] is Sum sum
+                ? MergeSums(
+                        sum.elts, RecursiveSimplify(elts.Cdr()))
+                : MergeSums(
                 ImList(elts[0]), RecursiveSimplify(elts.Cdr()));
         }
 
@@ -1341,10 +1357,10 @@ namespace Symbolism
 
     public static class Constructors
     {
-        public static MathObject sqrt(MathObject obj) => obj ^ (new Integer(1) / new Integer(2));
+        public static MathObject Sqrt(MathObject obj) => obj ^ (new Integer(1) / new Integer(2));
 
-        public static MathObject and(params MathObject[] ls) => And.FromRange(ls).Simplify();
+        public static MathObject And(params MathObject[] ls) => Symbolism.And.FromRange(ls).Simplify();
 
-        public static MathObject or(params MathObject[] ls) => Or.FromRange(ls).Simplify();
+        public static MathObject Or(params MathObject[] ls) => Symbolism.Or.FromRange(ls).Simplify();
     }
 }

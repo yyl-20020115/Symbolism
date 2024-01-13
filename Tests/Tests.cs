@@ -375,15 +375,15 @@ namespace SymbolismTests
 
     public class Tests
     {
-        Symbol a = new Symbol("a");
-        Symbol b = new Symbol("b");
-        Symbol c = new Symbol("c");
-        Symbol d = new Symbol("d");
-        Symbol w = new Symbol("w");
+        readonly Symbol a = new Symbol("a");
+        readonly Symbol b = new Symbol("b");
+        readonly Symbol c = new Symbol("c");
+        readonly Symbol d = new Symbol("d");
+        readonly Symbol w = new Symbol("w");
 
-        Symbol x = new Symbol("x");
-        Symbol y = new Symbol("y");
-        Symbol z = new Symbol("z");
+        readonly Symbol x = new Symbol("x");
+        readonly Symbol y = new Symbol("y");
+        readonly Symbol z = new Symbol("z");
 
         Integer Int(int n) => new Integer(n);
 
@@ -406,10 +406,10 @@ namespace SymbolismTests
 
         #region Const
 
-        [Fact] public void Test5() => Assert.True((2 * x * y).Const() == 2);
+        [Fact] public void Test5() => Assert.Equal(2, (2 * x * y).Const());
         [Fact] public void Test6() => Assert.True((x * y / 2).Const() == new Integer(1) / 2);
-        [Fact] public void Test7() => Assert.True((0.1 * x * y).Const() == 0.1);
-        [Fact] public void Test8() => Assert.True((x * y).Const() == 1);
+        [Fact] public void Test7() => Assert.Equal(0.1, (0.1 * x * y).Const());
+        [Fact] public void Test8() => Assert.Equal(1, (x * y).Const());
 
         #endregion
 
@@ -428,8 +428,8 @@ namespace SymbolismTests
         [Fact] public void Test19() => Assert.True(6 * x * y / 3 == 2 * x * y);
         [Fact] public void Test20() => Assert.True((((x ^ Int(1) / 2) ^ Int(1) / 2) ^ 8) == (x ^ 2));
         [Fact] public void Test21() => Assert.True(((((x * y) ^ (Int(1) / 2)) * (z ^ 2)) ^ 2) == (x * y * (z ^ 4)));
-        [Fact] public void Test22() => Assert.True(x / x == 1);
-        [Fact] public void Test23() => Assert.True(x / y * y / x == 1);
+        [Fact] public void Test22() => Assert.Equal(1, x / x);
+        [Fact] public void Test23() => Assert.Equal(1, x / y * y / x);
         [Fact] public void Test24() => Assert.True((x ^ 2) * (x ^ 3) == (x ^ 5));
         [Fact] public void Test25() => Assert.True(x + y + x + z + 5 + z == 5 + 2 * x + y + 2 * z);
         [Fact] public void Test26() => Assert.True(((Int(1) / 2) * x + (Int(3) / 4) * x) == Int(5) / 4 * x);
@@ -443,14 +443,14 @@ namespace SymbolismTests
         #endregion
 
         #region Power.Simplify
-        [Fact] public void Test33() => Assert.True((0 ^ x) == 0);
-        [Fact] public void Test34() => Assert.True((1 ^ x) == 1);
-        [Fact] public void Test35() => Assert.True((x ^ 0) == 1);
+        [Fact] public void Test33() => Assert.Equal(0, (0 ^ x));
+        [Fact] public void Test34() => Assert.Equal(1, (1 ^ x));
+        [Fact] public void Test35() => Assert.Equal(1, (x ^ 0));
         [Fact] public void Test36() => Assert.True((x ^ 1) == x);
         #endregion
 
         // Product.Simplify
-        [Fact] public void Test37() => Assert.True(x * 0 == 0);
+        [Fact] public void Test37() => Assert.Equal(0, x * 0);
 
         // Difference
         [Fact] public void Test38() => Assert.True(-x == -1 * x);
@@ -458,11 +458,11 @@ namespace SymbolismTests
 
         #region Substitute
 
-        [Fact] public void Test40() => Assert.True(Int(10).Substitute(Int(10), 20) == 20);
-        [Fact] public void Test41() => Assert.True(Int(10).Substitute(Int(15), 20) == 10);
+        [Fact] public void Test40() => Assert.Equal(20, Int(10).Substitute(Int(10), 20));
+        [Fact] public void Test41() => Assert.Equal(10, Int(10).Substitute(Int(15), 20));
 
-        [Fact] public void Test42() => Assert.True(new DoubleFloat(1.0).Substitute(new DoubleFloat(1.0), 2.0) == 2.0);
-        [Fact] public void Test43() => Assert.True(new DoubleFloat(1.0).Substitute(new DoubleFloat(1.5), 2.0) == 1.0);
+        [Fact] public void Test42() => Assert.Equal(2.0, new DoubleFloat(1.0).Substitute(new DoubleFloat(1.0), 2.0));
+        [Fact] public void Test43() => Assert.Equal(1.0, new DoubleFloat(1.0).Substitute(new DoubleFloat(1.5), 2.0));
 
         [Fact] public void Test44() => Assert.True((Int(1) / 2).Substitute(Int(1) / 2, Int(3) / 4) == Int(3) / 4);
         [Fact] public void Test45() => Assert.True((Int(1) / 2).Substitute(Int(1) / 3, Int(3) / 4) == Int(1) / 2);
@@ -473,7 +473,7 @@ namespace SymbolismTests
         [Fact] public void Test48() => Assert.True((x ^ y).Substitute(x, 10) == (10 ^ y));
         [Fact] public void Test49() => Assert.True((x ^ y).Substitute(y, 10) == (x ^ 10));
 
-        [Fact] public void Test50() => Assert.True((x ^ y).Substitute(x ^ y, 10) == 10);
+        [Fact] public void Test50() => Assert.Equal(10, (x ^ y).Substitute(x ^ y, 10));
 
         [Fact] public void Test51() => Assert.True((x * y * z).Substitute(x, y) == ((y ^ 2) * z));
         [Fact] public void Test52() => Assert.True((x * y * z).Substitute(x * y * z, x) == x);
@@ -481,7 +481,7 @@ namespace SymbolismTests
         [Fact] public void Test53() => Assert.True((x + y + z).Substitute(x, y) == ((y * 2) + z));
         [Fact] public void Test54() => Assert.True((x + y + z).Substitute(x + y + z, x) == x);
 
-        [Fact] public void Test55() => Assert.True(((((x * y) ^ (Int(1) / 2)) * (z ^ 2)) ^ 2).Substitute(x, 10).Substitute(y, 20).Substitute(z, 3) == 16200);
+        [Fact] public void Test55() => Assert.Equal(16200, ((((x * y) ^ (Int(1) / 2)) * (z ^ 2)) ^ 2).Substitute(x, 10).Substitute(y, 20).Substitute(z, 3));
 
         #region Equation.Substitute
 
@@ -498,7 +498,7 @@ namespace SymbolismTests
 
         #endregion
 
-        [Fact] public void Test62() => Assert.True(sin(new DoubleFloat(3.14159 / 2)) == 0.99999999999911982);
+        [Fact] public void Test62() => Assert.Equal(0.99999999999911982, sin(new DoubleFloat(3.14159 / 2)));
 
         [Fact] public void Test63() => Assert.True(sin(x + y) + sin(x + y) == 2 * sin(x + y));
 
@@ -506,7 +506,7 @@ namespace SymbolismTests
 
         [Fact] public void Test65() => Assert.True(sin(x + x).Substitute(x, 1) == sin(Int(2)));
 
-        [Fact] public void Test66() => Assert.True(sin(x + x).Substitute(x, 1.0) == 0.90929742682568171);
+        [Fact] public void Test66() => Assert.Equal(0.90929742682568171, sin(x + x).Substitute(x, 1.0));
 
         [Fact] public void Test67() => Assert.True(sin(2 * x).Substitute(x, y) == sin(2 * y));
 
@@ -518,15 +518,15 @@ namespace SymbolismTests
 
         [Fact] public void Test70() => Assert.True(x != y);
 
-        [Fact] public void Test71() => Assert.True(x != 10);
+        [Fact] public void Test71() => Assert.NotEqual("10", x.ToString());
 
         // ==(double a, MathObject b)
 
-        [Fact] public void Test72() => Assert.True(1.0 == new DoubleFloat(3.0) - 2.0);
+        [Fact] public void Test72() => Assert.Equal(1.0, new DoubleFloat(3.0) - 2.0);
 
         [Fact] public void Test73() => Assert.True((a == b) != (a != b));
 
-        [Fact] public void Test74() => (sqrt(a * b) * (sqrt(a * b) / a) / c).AssertEqTo(b / c);
+        [Fact] public void Test74() => (Sqrt(a * b) * (Sqrt(a * b) / a) / c).AssertEqTo(b / c);
 
         void AssertToStringMatch(MathObject obj, string str) => Assert.True(obj.ToString() == str);
 
@@ -543,7 +543,7 @@ namespace SymbolismTests
 
             Assert.True((sin(x) * cos(y)).ToString() == "cos(y) * sin(x)", "(sin(x) * cos(y)).ToString()");
 
-            AssertToStringMatch(and(x, y, z), "and(x, y, z)");
+            AssertToStringMatch(And(x, y, z), "and(x, y, z)");
 
             AssertToStringMatch(x ^ y, "x ^ y");
 
@@ -593,7 +593,7 @@ namespace SymbolismTests
             Assert.True(sin(x / y).ToString() == "sin(x / y)", "sin(x / y).ToString()");
 
             Assert.True(
-                (x == -sqrt(2 * y * (-z * a + y * (b ^ 2) / 2 - c * y * d + c * y * z * sin(x))) / y).ToString() ==
+                (x == -Sqrt(2 * y * (-z * a + y * (b ^ 2) / 2 - c * y * d + c * y * z * sin(x))) / y).ToString() ==
                 "x == -sqrt(2 * y * ((b ^ 2) * y / 2 - c * d * y - a * z + c * sin(x) * y * z)) / y",
                 "(x == -sqrt(2 * y * (-z * a + y * (b ^ 2) / 2 - c * y * d + c * y * z * sin(x))) / y).ToString()");
 
@@ -601,35 +601,35 @@ namespace SymbolismTests
 
             Assert.True((x + (y ^ z)).ToString() == "x + (y ^ z)", "((x + (y ^ z)).ToString()");
 
-            Assert.True(sqrt(x).ToString() == "sqrt(x)", "sqrt(x).ToString()");
+            Assert.True(Sqrt(x).ToString() == "sqrt(x)", "sqrt(x).ToString()");
 
-            Assert.True(sqrt(x).FullForm().ToString() == "x ^ 1/2", "sqrt(x).FullForm()");
+            Assert.True(Sqrt(x).FullForm().ToString() == "x ^ 1/2", "sqrt(x).FullForm()");
 
             Assert.True((x ^ (new Integer(1) / 3)).ToString() == "x ^ 1/3", "(x ^ (new Integer(1) / 3)).ToString()");
 
-            Assert.True(and(and(x, y), and(x, z)).SimplifyLogical().ToString() == "and(x, y, z)",
+            Assert.True(And(And(x, y), And(x, z)).SimplifyLogical().ToString() == "and(x, y, z)",
                 "and(and(x, y), and(x, z)).SimplifyLogical().ToString()");
 
-            AssertToStringMatch(x == sqrt(2 * (y * z - cos(a) * y * z)), "x == sqrt(2 * (y * z - cos(a) * y * z))");
+            AssertToStringMatch(x == Sqrt(2 * (y * z - cos(a) * y * z)), "x == sqrt(2 * (y * z - cos(a) * y * z))");
 
             AssertToStringMatch(
                  a == (-c * cos(d) - b * c * sin(d) + x * y + b * x * z) / (-y - z),
                 "a == (-c * cos(d) - b * c * sin(d) + x * y + b * x * z) / (-y - z)");
 
             AssertToStringMatch(
-                 x == -(sin(y) / cos(y) + sqrt((sin(y) ^ 2) / (cos(y) ^ 2))) * (z ^ 2) / a,
+                 x == -(sin(y) / cos(y) + Sqrt((sin(y) ^ 2) / (cos(y) ^ 2))) * (z ^ 2) / a,
                 "x == -(sin(y) / cos(y) + sqrt((sin(y) ^ 2) / (cos(y) ^ 2))) * (z ^ 2) / a");
 
-            AssertToStringMatch(x * sqrt(y), "x * sqrt(y)");
+            AssertToStringMatch(x * Sqrt(y), "x * sqrt(y)");
 
-            AssertToStringMatch(x / sqrt(y), "x / sqrt(y)");
+            AssertToStringMatch(x / Sqrt(y), "x / sqrt(y)");
 
-            AssertToStringMatch(sqrt(y) / x, "sqrt(y) / x");
+            AssertToStringMatch(Sqrt(y) / x, "sqrt(y) / x");
 
             AssertToStringMatch((x ^ 2) / (y ^ 3), "(x ^ 2) / (y ^ 3)");
 
             AssertToStringMatch(
-                 x == y * sqrt(-8 * a / (y * (z ^ 2))) * (z ^ 2) / (4 * a),
+                 x == y * Sqrt(-8 * a / (y * (z ^ 2))) * (z ^ 2) / (4 * a),
                 "x == y * sqrt(-8 * a / (y * (z ^ 2))) * (z ^ 2) / (4 * a)");
 
             AssertToStringMatch(-(-1 + x), "-(-1 + x)");
@@ -658,40 +658,40 @@ namespace SymbolismTests
         #endregion
 
         #region And
-        [Fact] public void Test84() => and().AssertEqTo(true);
+        [Fact] public void Test84() => And().AssertEqTo(true);
 
-        [Fact] public void Test85() => and(10).AssertEqTo(10);
+        [Fact] public void Test85() => And(10).AssertEqTo(10);
 
-        [Fact] public void Test86() => and(true).AssertEqTo(true);
+        [Fact] public void Test86() => And(true).AssertEqTo(true);
 
-        [Fact] public void Test87() => and(false).AssertEqTo(false);
+        [Fact] public void Test87() => And(false).AssertEqTo(false);
 
-        [Fact] public void Test88() => and(10, 20, 30).AssertEqTo(and(10, 20, 30));
+        [Fact] public void Test88() => And(10, 20, 30).AssertEqTo(And(10, 20, 30));
 
-        [Fact] public void Test89() => and(10, false, 20).AssertEqTo(false);
+        [Fact] public void Test89() => And(10, false, 20).AssertEqTo(false);
 
-        [Fact] public void Test90() => and(10, true, 20).AssertEqTo(and(10, 20));
+        [Fact] public void Test90() => And(10, true, 20).AssertEqTo(And(10, 20));
 
-        [Fact] public void Test91() => and(10, and(20, 30), 40).AssertEqTo(and(10, 20, 30, 40));
+        [Fact] public void Test91() => And(10, And(20, 30), 40).AssertEqTo(And(10, 20, 30, 40));
         #endregion
 
         #region Or
 
-        [Fact] public void Test92() => or(10).AssertEqTo(10);
+        [Fact] public void Test92() => Or(10).AssertEqTo(10);
 
-        [Fact] public void Test93() => or(true).AssertEqTo(true);
+        [Fact] public void Test93() => Or(true).AssertEqTo(true);
 
-        [Fact] public void Test94() => or(false).AssertEqTo(false);
+        [Fact] public void Test94() => Or(false).AssertEqTo(false);
 
-        [Fact] public void Test95() => or(10, 20, false).AssertEqTo(or(10, 20));
+        [Fact] public void Test95() => Or(10, 20, false).AssertEqTo(Or(10, 20));
 
-        [Fact] public void Test96() => or(false, false).AssertEqTo(false);
+        [Fact] public void Test96() => Or(false, false).AssertEqTo(false);
 
-        [Fact] public void Test97() => or(10, true, 20, false).AssertEqTo(true);
+        [Fact] public void Test97() => Or(10, true, 20, false).AssertEqTo(true);
 
-        [Fact] public void Test98() => or(10, false, 20).AssertEqTo(or(10, 20));
+        [Fact] public void Test98() => Or(10, false, 20).AssertEqTo(Or(10, 20));
 
-        [Fact] public void Test99() => or(10, or(20, 30), 40).AssertEqTo(or(10, 20, 30, 40));
+        [Fact] public void Test99() => Or(10, Or(20, 30), 40).AssertEqTo(Or(10, 20, 30, 40));
 
         #endregion
 
@@ -699,7 +699,7 @@ namespace SymbolismTests
 
         [Fact]
         public void Test100() => new And(1, 2, 3, 4, 5, 6).Map(elt => elt * 2)
-            .AssertEqTo(and(2, 4, 6, 8, 10, 12));
+            .AssertEqTo(And(2, 4, 6, 8, 10, 12));
 
 
         [Fact]
@@ -708,18 +708,18 @@ namespace SymbolismTests
 
         [Fact]
         public void Test102() => new Or(1, 2, 3).Map(elt => elt * 2)
-            .AssertEqTo(or(2, 4, 6));
+            .AssertEqTo(Or(2, 4, 6));
 
         [Fact]
         public void Test103() => new Or(1, 2, 3, 4, 5, 6).Map(elt => (elt is Integer) && (elt as Integer).val % 2 == 0 ? elt : false)
-            .AssertEqTo(or(2, 4, 6));
+            .AssertEqTo(Or(2, 4, 6));
 
         #endregion Function.Map
 
         #region Sum
 
         [Fact]
-        public void Test104() => Assert.True((x + y).Equals(x * y) == false, "(x + y).Equals(x * y)");
+        public void Test104() => Assert.False((x + y).Equals(x * y), "(x + y).Equals(x * y)");
 
         #endregion
 
@@ -731,9 +731,9 @@ namespace SymbolismTests
             (x > y).Substitute(x, 10).Substitute(y, 20).AssertEqTo(false);
         }
 
-        Symbol Pi = new Symbol("Pi");
+        readonly Symbol Pi = new Symbol("Pi");
 
-        MathObject half = new Integer(1) / 2;
+        readonly MathObject half = new Integer(1) / 2;
 
         #region Sin
 
@@ -763,23 +763,23 @@ namespace SymbolismTests
         [Fact] public void Test121() => sin(5 * Pi / 2).AssertEqTo(1);
         [Fact] public void Test122() => sin(7 * Pi / 2).AssertEqTo(-1);
 
-        [Fact] public void Test123() => sin(-4 * Pi / 3).AssertEqTo(sqrt(3) / 2);
-        [Fact] public void Test124() => sin(-2 * Pi / 3).AssertEqTo(-sqrt(3) / 2);
-        [Fact] public void Test125() => sin(-1 * Pi / 3).AssertEqTo(-sqrt(3) / 2);
-        [Fact] public void Test126() => sin(1 * Pi / 3).AssertEqTo(sqrt(3) / 2);
-        [Fact] public void Test127() => sin(2 * Pi / 3).AssertEqTo(sqrt(3) / 2);
-        [Fact] public void Test128() => sin(4 * Pi / 3).AssertEqTo(-sqrt(3) / 2);
-        [Fact] public void Test129() => sin(5 * Pi / 3).AssertEqTo(-sqrt(3) / 2);
-        [Fact] public void Test130() => sin(7 * Pi / 3).AssertEqTo(sqrt(3) / 2);
+        [Fact] public void Test123() => sin(-4 * Pi / 3).AssertEqTo(Sqrt(3) / 2);
+        [Fact] public void Test124() => sin(-2 * Pi / 3).AssertEqTo(-Sqrt(3) / 2);
+        [Fact] public void Test125() => sin(-1 * Pi / 3).AssertEqTo(-Sqrt(3) / 2);
+        [Fact] public void Test126() => sin(1 * Pi / 3).AssertEqTo(Sqrt(3) / 2);
+        [Fact] public void Test127() => sin(2 * Pi / 3).AssertEqTo(Sqrt(3) / 2);
+        [Fact] public void Test128() => sin(4 * Pi / 3).AssertEqTo(-Sqrt(3) / 2);
+        [Fact] public void Test129() => sin(5 * Pi / 3).AssertEqTo(-Sqrt(3) / 2);
+        [Fact] public void Test130() => sin(7 * Pi / 3).AssertEqTo(Sqrt(3) / 2);
 
-        [Fact] public void Test131() => sin(-3 * Pi / 4).AssertEqTo(-1 / sqrt(2));
-        [Fact] public void Test132() => sin(-1 * Pi / 4).AssertEqTo(-1 / sqrt(2));
-        [Fact] public void Test133() => sin(1 * Pi / 4).AssertEqTo(1 / sqrt(2));
-        [Fact] public void Test134() => sin(3 * Pi / 4).AssertEqTo(1 / sqrt(2));
-        [Fact] public void Test135() => sin(5 * Pi / 4).AssertEqTo(-1 / sqrt(2));
-        [Fact] public void Test136() => sin(7 * Pi / 4).AssertEqTo(-1 / sqrt(2));
-        [Fact] public void Test137() => sin(9 * Pi / 4).AssertEqTo(1 / sqrt(2));
-        [Fact] public void Test138() => sin(11 * Pi / 4).AssertEqTo(1 / sqrt(2));
+        [Fact] public void Test131() => sin(-3 * Pi / 4).AssertEqTo(-1 / Sqrt(2));
+        [Fact] public void Test132() => sin(-1 * Pi / 4).AssertEqTo(-1 / Sqrt(2));
+        [Fact] public void Test133() => sin(1 * Pi / 4).AssertEqTo(1 / Sqrt(2));
+        [Fact] public void Test134() => sin(3 * Pi / 4).AssertEqTo(1 / Sqrt(2));
+        [Fact] public void Test135() => sin(5 * Pi / 4).AssertEqTo(-1 / Sqrt(2));
+        [Fact] public void Test136() => sin(7 * Pi / 4).AssertEqTo(-1 / Sqrt(2));
+        [Fact] public void Test137() => sin(9 * Pi / 4).AssertEqTo(1 / Sqrt(2));
+        [Fact] public void Test138() => sin(11 * Pi / 4).AssertEqTo(1 / Sqrt(2));
 
         [Fact] public void Test139() => sin(-5 * Pi / 6).AssertEqTo(-half);
         [Fact] public void Test140() => sin(-1 * Pi / 6).AssertEqTo(-half);
@@ -859,11 +859,11 @@ namespace SymbolismTests
 
         [Fact] public void Test178() => Assert.True(a.Has(elt => elt == a), "a.Has(elt => elt == a)");
 
-        [Fact] public void Test179() => Assert.True(a.Has(elt => elt == b) == false, "a.Has(elt => elt == b) == false");
+        [Fact] public void Test179() => Assert.False(a.Has(elt => elt == b), "a.Has(elt => elt == b) == false");
 
         [Fact] public void Test180() => Assert.True((a == b).Has(elt => elt == a), "Has - 3");
 
-        [Fact] public void Test181() => Assert.True((a == b).Has(elt => elt == c) == false, "Has - 4");
+        [Fact] public void Test181() => Assert.False((a == b).Has(elt => elt == c), "Has - 4");
 
         [Fact] public void Test182() => Assert.True(((a + b) ^ c).Has(elt => elt == a + b), "Has - 5");
 
@@ -873,27 +873,27 @@ namespace SymbolismTests
 
         [Fact] public void Test185() => Assert.True((x * (a + b + c)).Has(elt => (elt is Sum) && (elt as Sum).elts.Any(obj => obj == b)), "Has - 8");
 
-        [Fact] public void Test186() => Assert.True((x * (a + b + c)).Has(elt => (elt is Product) && (elt as Product).elts.Any(obj => obj == b)) == false, "Has - 9");
+        [Fact] public void Test186() => Assert.False((x * (a + b + c)).Has(elt => (elt is Product) && (elt as Product).elts.Any(obj => obj == b)), "Has - 9");
 
         #endregion
 
         #region FreeOf
 
-        [Fact] public void Test187() => Assert.True((a + b).FreeOf(b) == false, "(a + b).FreeOf(b)");
-        [Fact] public void Test188() => Assert.True((a + b).FreeOf(c) == true, "(a + b).FreeOf(c)");
-        [Fact] public void Test189() => Assert.True(((a + b) * c).FreeOf(a + b) == false, "((a + b) * c).FreeOf(a + b)");
-        [Fact] public void Test190() => Assert.True((sin(x) + 2 * x).FreeOf(sin(x)) == false, "(sin(x) + 2 * x).FreeOf(sin(x))");
-        [Fact] public void Test191() => Assert.True(((a + b + c) * d).FreeOf(a + b) == true, "((a + b + c) * d).FreeOf(a + b)");
-        [Fact] public void Test192() => Assert.True(((y + 2 * x - y) / x).FreeOf(x) == true, "((y + 2 * x - y) / x).FreeOf(x)");
-        [Fact] public void Test193() => Assert.True(((x * y) ^ 2).FreeOf(x * y) == true, "((x * y) ^ 2).FreeOf(x * y)");
+        [Fact] public void Test187() => Assert.False((a + b).FreeOf(b), "(a + b).FreeOf(b)");
+        [Fact] public void Test188() => Assert.True((a + b).FreeOf(c), "(a + b).FreeOf(c)");
+        [Fact] public void Test189() => Assert.False(((a + b) * c).FreeOf(a + b), "((a + b) * c).FreeOf(a + b)");
+        [Fact] public void Test190() => Assert.False((sin(x) + 2 * x).FreeOf(sin(x)), "(sin(x) + 2 * x).FreeOf(sin(x))");
+        [Fact] public void Test191() => Assert.True(((a + b + c) * d).FreeOf(a + b), "((a + b + c) * d).FreeOf(a + b)");
+        [Fact] public void Test192() => Assert.True(((y + 2 * x - y) / x).FreeOf(x), "((y + 2 * x - y) / x).FreeOf(x)");
+        [Fact] public void Test193() => Assert.True(((x * y) ^ 2).FreeOf(x * y), "((x * y) ^ 2).FreeOf(x * y)");
 
         #endregion
 
         #region Numerator
 
-        [Fact] public void Test194() => Assert.True((x ^ -1).Numerator() == 1);
+        [Fact] public void Test194() => Assert.Equal(1, (x ^ -1).Numerator());
 
-        [Fact] public void Test195() => Assert.True((x ^ -half).Numerator() == 1);
+        [Fact] public void Test195() => Assert.Equal(1, (x ^ -half).Numerator());
 
         #endregion
 
@@ -909,49 +909,49 @@ namespace SymbolismTests
 
         [Fact]
         public void Test197() =>
-            and(or(a, b), c).LogicalExpand()
+            And(Or(a, b), c).LogicalExpand()
             .AssertEqTo(
-                or(
-                    and(a, c),
-                    and(b, c)));
+                Or(
+                    And(a, c),
+                    And(b, c)));
 
         [Fact]
         public void Test198() =>
-                and(a, or(b, c))
+                And(a, Or(b, c))
                     .LogicalExpand()
-                    .AssertEqTo(or(and(a, b), and(a, c)));
+                    .AssertEqTo(Or(And(a, b), And(a, c)));
 
         [Fact]
         public void Test199() =>
-                and(a, or(b, c), d)
+                And(a, Or(b, c), d)
                     .LogicalExpand()
                     .AssertEqTo(
-                        or(
-                            and(a, b, d),
-                            and(a, c, d)));
+                        Or(
+                            And(a, b, d),
+                            And(a, c, d)));
 
         [Fact]
         public void Test200() =>
-                and(or(a == b, b == c), x == y)
+                And(Or(a == b, b == c), x == y)
                     .LogicalExpand()
                     .AssertEqTo(
-                        or(
-                            and(a == b, x == y),
-                            and(b == c, x == y)));
+                        Or(
+                            And(a == b, x == y),
+                            And(b == c, x == y)));
 
         [Fact]
         public void Test201() =>
-                and(
-                    or(a == b, b == c),
-                    or(c == d, d == a),
+                And(
+                    Or(a == b, b == c),
+                    Or(c == d, d == a),
                     x == y)
                     .LogicalExpand()
                     .AssertEqTo(
-                        or(
-                            and(a == b, c == d, x == y),
-                            and(a == b, d == a, x == y),
-                            and(b == c, c == d, x == y),
-                            and(b == c, d == a, x == y)));
+                        Or(
+                            And(a == b, c == d, x == y),
+                            And(a == b, d == a, x == y),
+                            And(b == c, c == d, x == y),
+                            And(b == c, d == a, x == y)));
 
         #endregion
 
@@ -981,9 +981,9 @@ namespace SymbolismTests
 
         [Fact]
         public void Test205() =>
-        and(a, b, c, a)
+        And(a, b, c, a)
                     .SimplifyLogical()
-                    .AssertEqTo(and(a, b, c));
+                    .AssertEqTo(And(a, b, c));
 
         #endregion SimplifyLogical
 
@@ -1017,7 +1017,7 @@ namespace SymbolismTests
 
         [Fact] public void Test211() => Assert.True((3 * x * (y ^ 2) + 5 * (x ^ 2) * y + 7 * x + 9).CoefficientGpe(x, 1) == 3 * (y ^ 2) + 7);
 
-        [Fact] public void Test212() => Assert.True((3 * x * (y ^ 2) + 5 * (x ^ 2) * y + 7 * x + 9).CoefficientGpe(x, 3) == 0);
+        [Fact] public void Test212() => Assert.Equal(0, (3 * x * (y ^ 2) + 5 * (x ^ 2) * y + 7 * x + 9).CoefficientGpe(x, 3));
 
         [Fact]
         public void Test213() => Assert.True(
@@ -1074,7 +1074,7 @@ namespace SymbolismTests
 
         [Fact]
         public void Test220() =>
-            (5 * x * (500 / (x ^ 2) * (sqrt(3.0) / 4) + 1) + 2 * (x ^ 2) + (sqrt(3.0) / 2) * (x ^ 2))
+            (5 * x * (500 / (x ^ 2) * (Sqrt(3.0) / 4) + 1) + 2 * (x ^ 2) + (Sqrt(3.0) / 2) * (x ^ 2))
             .AlgebraicExpand()
             .AssertEqTo(1082.5317547305483 / x + 5 * x + 2.8660254037844384 * (x ^ 2));
 
@@ -1092,14 +1092,14 @@ namespace SymbolismTests
             .AssertEqTo(x == c);
 
         [Fact]
-        public void Test223() => and(x == y, a == b)
+        public void Test223() => And(x == y, a == b)
                     .IsolateVariable(b)
-                    .AssertEqTo(and(x == y, b == a));
+                    .AssertEqTo(And(x == y, b == a));
 
         [Fact]
-        public void Test224() => or(and(y == x, z == x), and(b == x, c == x))
+        public void Test224() => Or(And(y == x, z == x), And(b == x, c == x))
                     .IsolateVariable(x)
-                    .AssertEqTo(or(and(x == y, x == z), and(x == b, x == c)));
+                    .AssertEqTo(Or(And(x == y, x == z), And(x == b, x == c)));
 
         [Fact] public void Test225() => Assert.True((0 == x - y).IsolateVariableEq(x).Equals(x == y), "(0 == x - y).IsolateVariable(x).Equals(x == y)");
 
@@ -1110,21 +1110,21 @@ namespace SymbolismTests
             .IsolateVariable(x)
             .AssertEqTo(
 
-                or(
+                Or(
 
-                    and(
-                        x == (-b + sqrt((b ^ 2) + -4 * a * c)) / (2 * a),
+                    And(
+                        x == (-b + Sqrt((b ^ 2) + -4 * a * c)) / (2 * a),
                         a != 0
                     ),
 
-                    and(
-                        x == (-b - sqrt((b ^ 2) + -4 * a * c)) / (2 * a),
+                    And(
+                        x == (-b - Sqrt((b ^ 2) + -4 * a * c)) / (2 * a),
                         a != 0
                     ),
 
-                    and(x == -c / b, a == 0, b != 0),
+                    And(x == -c / b, a == 0, b != 0),
 
-                    and(a == 0, b == 0, c == 0)
+                    And(a == 0, b == 0, c == 0)
                 )
             );
 
@@ -1133,18 +1133,18 @@ namespace SymbolismTests
             .IsolateVariable(x)
             .AssertEqTo(
 
-                or(
-                    and(
-                        x == sqrt(-4 * a * c) / (2 * a),
+                Or(
+                    And(
+                        x == Sqrt(-4 * a * c) / (2 * a),
                         a != 0
                     ),
 
-                    and(
-                        x == -sqrt(-4 * a * c) / (2 * a),
+                    And(
+                        x == -Sqrt(-4 * a * c) / (2 * a),
                         a != 0
                     ),
 
-                    and(a == 0, c == 0)
+                    And(a == 0, c == 0)
                 )
             );
 
@@ -1156,23 +1156,23 @@ namespace SymbolismTests
         public void Test228() => ((a * (x ^ 2) + c) / x == -b)
             .IsolateVariable(x)
             .AssertEqTo(
-                or(
-                    and(
-                        x == (-b + sqrt((b ^ 2) + -4 * a * c)) / (2 * a),
+                Or(
+                    And(
+                        x == (-b + Sqrt((b ^ 2) + -4 * a * c)) / (2 * a),
                         a != 0
                     ),
 
-                    and(
-                        x == (-b - sqrt((b ^ 2) + -4 * a * c)) / (2 * a),
+                    And(
+                        x == (-b - Sqrt((b ^ 2) + -4 * a * c)) / (2 * a),
                         a != 0
                     ),
 
-                    and(x == -c / b, a == 0, b != 0),
+                    And(x == -c / b, a == 0, b != 0),
 
-                    and(a == 0, b == 0, c == 0)
+                    And(a == 0, b == 0, c == 0)
                 ));
 
-        [Fact] public void Test229() => (sqrt(x + y) == z).IsolateVariable(x).AssertEqTo(x == (z ^ 2) - y);
+        [Fact] public void Test229() => (Sqrt(x + y) == z).IsolateVariable(x).AssertEqTo(x == (z ^ 2) - y);
 
         [Fact]
         public void Test230() => (a * b + a == c)
@@ -1185,29 +1185,29 @@ namespace SymbolismTests
                     .AssertEqTo(a == d / (b + c));
 
         [Fact]
-        public void Test232() => (1 / sqrt(x) == y)
+        public void Test232() => (1 / Sqrt(x) == y)
                     .IsolateVariable(x)
                     .AssertEqTo(x == (y ^ -2));
 
         [Fact]
-        public void Test233() => (y == sqrt(x) / x)
+        public void Test233() => (y == Sqrt(x) / x)
                     .IsolateVariable(x)
                     .AssertEqTo(x == (y ^ -2));
 
         [Fact]
-        public void Test234() => (-sqrt(x) + z * x == y)
+        public void Test234() => (-Sqrt(x) + z * x == y)
                     .IsolateVariable(x)
-                    .AssertEqTo(-sqrt(x) + z * x == y);
+                    .AssertEqTo(-Sqrt(x) + z * x == y);
 
         [Fact]
-        public void Test235() => (sqrt(a + x) - z * x == -y)
+        public void Test235() => (Sqrt(a + x) - z * x == -y)
                     .IsolateVariable(x)
-                    .AssertEqTo(sqrt(a + x) - z * x == -y);
+                    .AssertEqTo(Sqrt(a + x) - z * x == -y);
 
         [Fact]
-        public void Test236() => (sqrt(2 + x) * sqrt(3 + x) == y)
+        public void Test236() => (Sqrt(2 + x) * Sqrt(3 + x) == y)
                     .IsolateVariable(x)
-                    .AssertEqTo(sqrt(2 + x) * sqrt(3 + x) == y);
+                    .AssertEqTo(Sqrt(2 + x) * Sqrt(3 + x) == y);
 
         [Fact]
         public void Test237() => ((x + 1) / (x + 2) == 3)
@@ -1224,18 +1224,18 @@ namespace SymbolismTests
         #region EliminateVariable
 
         [Fact]
-        public void Test239() => and((x ^ 3) == (y ^ 5), z == x)
+        public void Test239() => And((x ^ 3) == (y ^ 5), z == x)
             .EliminateVariable(x)
             .AssertEqTo((z ^ 3) == (y ^ 5));
 
         [Fact]
-        public void Test241() => and((x ^ 3) == (y ^ 5), z == (x ^ 7))
+        public void Test241() => And((x ^ 3) == (y ^ 5), z == (x ^ 7))
             .EliminateVariable(x)
-            .AssertEqTo(and((x ^ 3) == (y ^ 5), z == (x ^ 7)));
+            .AssertEqTo(And((x ^ 3) == (y ^ 5), z == (x ^ 7)));
 
         #endregion
 
-        [Fact] public void Test242() => and(x + y == z, x / y == 0, x != 0).CheckVariable(x).AssertEqTo(false);
+        [Fact] public void Test242() => And(x + y == z, x / y == 0, x != 0).CheckVariable(x).AssertEqTo(false);
 
         #region RationalExpand
 
@@ -1243,9 +1243,9 @@ namespace SymbolismTests
 
         [Fact]
         public void Test243() => Assert.True(
-            (((sqrt(1 / (((x + y) ^ 2) + 1)) + 1)
+            (((Sqrt(1 / (((x + y) ^ 2) + 1)) + 1)
             *
-            (sqrt(1 / (((x + y) ^ 2) + 1)) - 1))
+            (Sqrt(1 / (((x + y) ^ 2) + 1)) - 1))
             / (x + 1))
             .RationalExpand()
 
@@ -1258,10 +1258,7 @@ namespace SymbolismTests
         // EA: page 269
 
         [Fact]
-        public void Test244() => Assert.True(
-            (1 / (1 / a + c / (a * b)) + (a * b * c + a * (c ^ 2)) / ((b + c) ^ 2) - a).RationalExpand()
-            ==
-            0);
+        public void Test244() => Assert.Equal(0, (1 / (1 / a + c / (a * b)) + (a * b * c + a * (c ^ 2)) / ((b + c) ^ 2) - a).RationalExpand());
 
         #endregion
 
@@ -1284,10 +1281,10 @@ namespace SymbolismTests
         [Fact]
         public void Test246()
         {
-            var result = PolynomialDivision(5 * (x ^ 2) + 4 * x + 1, 2 * x + 3, x);
+            var (quotient, remainder) = PolynomialDivision(5 * (x ^ 2) + 4 * x + 1, 2 * x + 3, x);
 
-            Assert.True(result.quotient == 5 * x / 2 - new Integer(7) / 4);
-            Assert.True(result.remainder == new Integer(25) / 4);
+            Assert.True(quotient == 5 * x / 2 - new Integer(7) / 4);
+            Assert.True(remainder == new Integer(25) / 4);
         }
 
         // MM: Example 4.10
@@ -1295,19 +1292,19 @@ namespace SymbolismTests
         [Fact]
         public void Test247()
         {
-            var result = PolynomialDivision((x ^ 2) - 4, x + 2, x);
+            var (quotient, remainder) = PolynomialDivision((x ^ 2) - 4, x + 2, x);
 
-            Assert.True(result.quotient == x - 2);
-            Assert.True(result.remainder == 0);
+            Assert.True(quotient == x - 2);
+            Assert.Equal(0, remainder);
         }
 
         [Fact]
         public void Test248()
         {
-            var result = PolynomialDivision((x ^ 2) + 5 * x + 6, x + 2, x);
+            var (quotient, remainder) = PolynomialDivision((x ^ 2) + 5 * x + 6, x + 2, x);
 
-            Assert.True(result.quotient == x + 3);
-            Assert.True(result.remainder == 0);
+            Assert.True(quotient == x + 3);
+            Assert.Equal(0, remainder);
         }
 
         // MM: Example 4.43
@@ -1315,9 +1312,9 @@ namespace SymbolismTests
         [Fact]
         public void Test249()
         {
-            var result = PolynomialDivision(3 * (x ^ 3) + (x ^ 2) - 4, (x ^ 2) - 4 * x + 2, x);
+            var (_, remainder) = PolynomialDivision(3 * (x ^ 3) + (x ^ 2) - 4, (x ^ 2) - 4 * x + 2, x);
 
-            Assert.True(result.remainder == 46 * x - 30);
+            Assert.True(remainder == 46 * x - 30);
         }
 
         // MM: Example 4.45
@@ -1326,10 +1323,9 @@ namespace SymbolismTests
         public void Test250()
         {
             var i = new Symbol("i");
+            var (_, remainder) = PolynomialDivision(2 + 3 * i + 4 * (i ^ 2) + 5 * (i ^ 3) + 6 * (i ^ 4), (i ^ 2) + 1, i);
 
-            var result = PolynomialDivision(2 + 3 * i + 4 * (i ^ 2) + 5 * (i ^ 3) + 6 * (i ^ 4), (i ^ 2) + 1, i);
-
-            Assert.True(result.remainder == 4 - 2 * i);
+            Assert.True(remainder == 4 - 2 * i);
         }
 
         #endregion
@@ -1372,8 +1368,7 @@ namespace SymbolismTests
             var x = new Symbol("x");
             var y = new Symbol("y");
             var z = new Symbol("z");
-
-            var eqs = and(
+            _ = And(
                 (x ^ 2) - 4 == 0,
                 y + x == 0,
                 x + z == 10
@@ -1383,7 +1378,7 @@ namespace SymbolismTests
 
             ((x ^ 2) - 4 == 0)
                 .IsolateVariableEq(x)
-                .AssertEqTo(or(x == half * sqrt(16), x == -half * sqrt(16)));
+                .AssertEqTo(Or(x == half * Sqrt(16), x == -half * Sqrt(16)));
         }
 
         [Fact]
@@ -1393,7 +1388,7 @@ namespace SymbolismTests
             var y = new Symbol("y");
             var z = new Symbol("z");
 
-            var eqs = and(
+            var eqs = And(
                 (x ^ 2) - 4 == 0,
                 y + x == 0,
                 x + z == 10
@@ -1403,14 +1398,14 @@ namespace SymbolismTests
                         
             eqs.EliminateVariable(x)
                 .AssertEqTo(
-                    or(
-                        and(
-                            half * sqrt(16) + y == 0,
-                            half * sqrt(16) + z == 10
+                    Or(
+                        And(
+                            half * Sqrt(16) + y == 0,
+                            half * Sqrt(16) + z == 10
                         ),
-                        and(
-                            -half * sqrt(16) + y == 0,
-                            -half * sqrt(16) + z == 10
+                        And(
+                            -half * Sqrt(16) + y == 0,
+                            -half * Sqrt(16) + z == 10
                         )
                     )
                 );
@@ -1423,7 +1418,7 @@ namespace SymbolismTests
             var y = new Symbol("y");
             var z = new Symbol("z");
 
-            var eqs = and(
+            var eqs = And(
                 (x ^ 2) - 4 == 0,
                 y + x == 0,
                 x + z == 10
@@ -1433,18 +1428,18 @@ namespace SymbolismTests
 
             ((x ^ 2) - 4 == 0)
                 .IsolateVariableEq(x)
-                .AssertEqTo(or(x == half * sqrt(16), x == -half * sqrt(16)));
+                .AssertEqTo(Or(x == half * Sqrt(16), x == -half * Sqrt(16)));
 
             eqs.EliminateVariable(x)
                 .AssertEqTo(
-                    or(
-                        and(
-                            half * sqrt(16) + y == 0,
-                            half * sqrt(16) + z == 10
+                    Or(
+                        And(
+                            half * Sqrt(16) + y == 0,
+                            half * Sqrt(16) + z == 10
                         ),
-                        and(
-                            -half * sqrt(16) + y == 0,
-                            -half * sqrt(16) + z == 10
+                        And(
+                            -half * Sqrt(16) + y == 0,
+                            -half * Sqrt(16) + z == 10
                         )
                     )
                 );
@@ -1471,7 +1466,7 @@ namespace SymbolismTests
             var tAC = new Symbol("tAC");
             var tAB = new Symbol("tAB");
 
-            var eqs = and(
+            var eqs = And(
                 tAB == tAC / 2,
                 Kinematic(sAC, vA, vC, a, tAC),
                 Kinematic(sAB, vA, vB, a, tAB)
@@ -1557,7 +1552,7 @@ namespace SymbolismTests
             var a2 = new Symbol("a2");
             var t2 = new Symbol("t2");
 
-            var eqs = and(
+            var eqs = And(
                 u1 == v1,
                 s1 == s2,
                 t2 == t1 - 1,
@@ -1575,7 +1570,7 @@ namespace SymbolismTests
                 .EliminateVariables(s2, t1, a1, s1, v2, u1)
                 .IsolateVariable(t2)
                 .SubstituteEqLs(vals)
-                .AssertEqTo(or(t2 == -0.96871942267131317, t2 == 30.968719422671313));
+                .AssertEqTo(Or(t2 == -0.96871942267131317, t2 == 30.968719422671313));
         }
 
         And Kinematic(Symbol sA, Symbol sB, Symbol vA, Symbol vB, Symbol a, Symbol tA, Symbol tB) =>
@@ -1603,7 +1598,7 @@ namespace SymbolismTests
 
             var a = new Symbol("a");
 
-            var eqs = and(
+            var eqs = And(
                 Kinematic(yA, yB, vA, vB, a, tA, tB),
                 Kinematic(yB, yC, vB, vC, a, tB, tC),
                 Kinematic(yC, yD, vC, vD, a, tC, tD));
@@ -1626,13 +1621,13 @@ namespace SymbolismTests
             eqs
                 .EliminateVariables(tB, tC, vC, yB, yD)
                 .SubstituteEqLs(vals)
-                .AssertEqTo(or(vD == -29.000000000000004, vD == -29.000000000000007));
+                .AssertEqTo(Or(vD == -29.000000000000004, vD == -29.000000000000007));
 
             eqs
                 .EliminateVariables(tB, tC, vC, yB, vD)
                 .IsolateVariable(yD)
                 .SubstituteEqLs(vals)
-                .AssertEqTo(or(yD == 27.499999999, yD == 27.499999999));
+                .AssertEqTo(Or(yD == 27.499999999, yD == 27.499999999));
 
             DoubleFloat.tolerance = null;
         }
@@ -1675,7 +1670,7 @@ namespace SymbolismTests
 
             var Pi = new Symbol("Pi");
 
-            var eqs = and(
+            var eqs = And(
 
                 vxA == vA * cos(thA),
                 vyA == vA * sin(thA),
@@ -1738,7 +1733,7 @@ namespace SymbolismTests
 
             var Pi = new Symbol("Pi");
 
-            var eqs = and(
+            var eqs = And(
 
                 obj.TrigEquationsA(),
 
@@ -1812,23 +1807,22 @@ namespace SymbolismTests
         [Fact]
         public void PSE_5E_Example_4_5()
         {
-            var xA = new Symbol("xA");
-            var xB = new Symbol("xB");
-            var xC = new Symbol("xC");
+            _ = new Symbol("xA");
+            _ = new Symbol("xB");
+            _ = new Symbol("xC");
 
             var yA = new Symbol("yA");
-            var yB = new Symbol("yB");
+            _ = new Symbol("yB");
             var yC = new Symbol("yC");
 
             var vxA = new Symbol("vxA");
-            var vxB = new Symbol("vxB");
+            _ = new Symbol("vxB");
             var vxC = new Symbol("vxC");
 
             var vyA = new Symbol("vyA");
-            var vyB = new Symbol("vyB");
+            _ = new Symbol("vyB");
             var vyC = new Symbol("vyC");
-
-            var tAB = new Symbol("tAB");
+            _ = new Symbol("tAB");
             var tAC = new Symbol("tAC");
 
             var ax = new Symbol("ax");
@@ -1841,7 +1835,7 @@ namespace SymbolismTests
 
             var Pi = new Symbol("Pi");
 
-            var eqs = and(
+            var eqs = And(
 
                 vxA == vA * cos(thA),
                 vyA == vA * sin(thA),
@@ -1860,7 +1854,7 @@ namespace SymbolismTests
                 // xC == xA + vxA * tAC + ax * (tAC ^ 2) / 2,
                 yC == yA + vyA * tAC + ay * (tAC ^ 2) / 2,
 
-                vC == sqrt((vxC ^ 2) + (vyC ^ 2)),
+                vC == Sqrt((vxC ^ 2) + (vyC ^ 2)),
 
                 ay != 0
             );
@@ -1876,16 +1870,16 @@ namespace SymbolismTests
                 .LogicalExpand().SimplifyEquation().SimplifyLogical()
                 .CheckVariable(ay)
                 .AssertEqTo(
-                    or(
-                        and(
-                            tAC == -(sin(thA) * vA + sqrt((sin(thA) ^ 2) * (vA ^ 2) + 2 * ay * (yC - yA))) / ay,
+                    Or(
+                        And(
+                            tAC == -(sin(thA) * vA + Sqrt((sin(thA) ^ 2) * (vA ^ 2) + 2 * ay * (yC - yA))) / ay,
                             ay != 0),
-                        and(
-                            tAC == -(sin(thA) * vA - sqrt((sin(thA) ^ 2) * (vA ^ 2) + 2 * ay * (yC - yA))) / ay,
+                        And(
+                            tAC == -(sin(thA) * vA - Sqrt((sin(thA) ^ 2) * (vA ^ 2) + 2 * ay * (yC - yA))) / ay,
                             ay != 0)))
                 .SubstituteEqLs(zeros)
                 .SubstituteEqLs(vals)
-                .AssertEqTo(or(tAC == 4.2180489012229376, tAC == -2.1772325746923267));
+                .AssertEqTo(Or(tAC == 4.2180489012229376, tAC == -2.1772325746923267));
 
             eqs
                 .SubstituteEqLs(zeros)
@@ -1893,15 +1887,15 @@ namespace SymbolismTests
                 .SimplifyEquation().SimplifyLogical()
                 .CheckVariable(ay)
                 .AssertEqTo(
-                    or(
-                        and(
+                    Or(
+                        And(
                             ay != 0,
-                            vC == sqrt((cos(thA) ^ 2) * (vA ^ 2) + ((sin(thA) * vA - (sin(thA) * vA + sqrt((sin(thA) ^ 2) * (vA ^ 2) + -2 * ay * yA))) ^ 2))),
-                        and(
+                            vC == Sqrt((cos(thA) ^ 2) * (vA ^ 2) + ((sin(thA) * vA - (sin(thA) * vA + Sqrt((sin(thA) ^ 2) * (vA ^ 2) + -2 * ay * yA))) ^ 2))),
+                        And(
                             ay != 0,
-                            vC == sqrt((cos(thA) ^ 2) * (vA ^ 2) + ((sin(thA) * vA - (sin(thA) * vA - sqrt((sin(thA) ^ 2) * (vA ^ 2) + -2 * ay * yA))) ^ 2)))))
+                            vC == Sqrt((cos(thA) ^ 2) * (vA ^ 2) + ((sin(thA) * vA - (sin(thA) * vA - Sqrt((sin(thA) ^ 2) * (vA ^ 2) + -2 * ay * yA))) ^ 2)))))
                 .SubstituteEqLs(vals)
-                .AssertEqTo(or(vC == 35.805027579936315, vC == 35.805027579936322));
+                .AssertEqTo(Or(vC == 35.805027579936315, vC == 35.805027579936322));
 
             DoubleFloat.tolerance = null;
         }
@@ -1937,7 +1931,7 @@ namespace SymbolismTests
 
             var Pi = new Symbol("Pi");
 
-            var eqs = and(
+            var eqs = And(
 
                 vxB == vxA + ax * tAB,
                 vyB == vyA + ay * tAB,
@@ -1964,32 +1958,32 @@ namespace SymbolismTests
                 .CheckVariable(vxA).SimplifyLogical()
                 .SubstituteEq(ax == 0)
                 .AssertEqTo(
-                    or(
-                        and(
+                    Or(
+                        And(
                             vxA != 0,
-                            xB == -(vxA ^ 2) * (-(-vyA / vxA + ay / (vxA ^ 2) * xA) + sqrt(((-vyA / vxA + ay * xA / (vxA ^ 2)) ^ 2) + 2 * ay * (vyA * xA / vxA - ay / 2 / (vxA ^ 2) * (xA ^ 2) - yA + yB) / (vxA ^ 2))) / ay,
+                            xB == -(vxA ^ 2) * (-(-vyA / vxA + ay / (vxA ^ 2) * xA) + Sqrt(((-vyA / vxA + ay * xA / (vxA ^ 2)) ^ 2) + 2 * ay * (vyA * xA / vxA - ay / 2 / (vxA ^ 2) * (xA ^ 2) - yA + yB) / (vxA ^ 2))) / ay,
                             ay / (vxA ^ 2) != 0,
                             ay != 0),
-                        and(
+                        And(
                             vxA != 0,
-                            xB == -(vxA ^ 2) * (-(-vyA / vxA + ay / (vxA ^ 2) * xA) - sqrt(((-vyA / vxA + ay * xA / (vxA ^ 2)) ^ 2) + 2 * ay * (vyA * xA / vxA - ay / 2 / (vxA ^ 2) * (xA ^ 2) - yA + yB) / (vxA ^ 2))) / ay,
+                            xB == -(vxA ^ 2) * (-(-vyA / vxA + ay / (vxA ^ 2) * xA) - Sqrt(((-vyA / vxA + ay * xA / (vxA ^ 2)) ^ 2) + 2 * ay * (vyA * xA / vxA - ay / 2 / (vxA ^ 2) * (xA ^ 2) - yA + yB) / (vxA ^ 2))) / ay,
                             ay / (vxA ^ 2) != 0,
                             ay != 0)))
                 .SubstituteEqLs(zeros)
                 .AssertEqTo(
-                    or(
-                        and(
+                    Or(
+                        And(
                             vxA != 0,
-                            xB == -1 / ay * (vxA ^ 2) * sqrt(-2 * ay * (vxA ^ -2) * yA),
+                            xB == -1 / ay * (vxA ^ 2) * Sqrt(-2 * ay * (vxA ^ -2) * yA),
                             ay / (vxA ^ 2) != 0,
                             ay != 0),
-                        and(
+                        And(
                             vxA != 0,
-                            xB == 1 / ay * (vxA ^ 2) * sqrt(-2 * ay * (vxA ^ -2) * yA),
+                            xB == 1 / ay * (vxA ^ 2) * Sqrt(-2 * ay * (vxA ^ -2) * yA),
                             ay / (vxA ^ 2) != 0,
                             ay != 0)))
                 .SubstituteEqLs(vals)
-                .AssertEqTo(or(xB == 180.70158058105022, xB == -180.70158058105022));
+                .AssertEqTo(Or(xB == 180.70158058105022, xB == -180.70158058105022));
 
             eqs
                 .EliminateVariables(vxB, xB, tAB)
@@ -1997,28 +1991,28 @@ namespace SymbolismTests
                 .LogicalExpand().SimplifyEquation()
                 .CheckVariable(ay)
                 .AssertEqTo(
-                    or(
-                        and(
-                            vyB == -1 * ay * sqrt(2 * (ay ^ -1) * ((ay ^ -1) / 2 * (vyA ^ 2) + -1 * yA + yB)),
+                    Or(
+                        And(
+                            vyB == -1 * ay * Sqrt(2 * (ay ^ -1) * ((ay ^ -1) / 2 * (vyA ^ 2) + -1 * yA + yB)),
                             vxA != 0,
                             ay != 0),
-                        and(
-                            vyB == ay * sqrt(2 * (ay ^ -1) * ((ay ^ -1) / 2 * (vyA ^ 2) + -1 * yA + yB)),
+                        And(
+                            vyB == ay * Sqrt(2 * (ay ^ -1) * ((ay ^ -1) / 2 * (vyA ^ 2) + -1 * yA + yB)),
                             vxA != 0,
                             ay != 0)))
                 .SubstituteEqLs(zeros)
                 .AssertEqTo(
-                    or(
-                      and(
-                          vyB == -ay * sqrt(-2 / ay * yA),
+                    Or(
+                      And(
+                          vyB == -ay * Sqrt(-2 / ay * yA),
                           vxA != 0,
                           ay != 0),
-                      and(
-                          vyB == ay * sqrt(-2 / ay * yA),
+                      And(
+                          vyB == ay * Sqrt(-2 / ay * yA),
                           vxA != 0,
                           ay != 0)))
                 .SubstituteEqLs(vals)
-                .AssertEqTo(or(vyB == 44.271887242357309, vyB == -44.271887242357309));
+                .AssertEqTo(Or(vyB == 44.271887242357309, vyB == -44.271887242357309));
 
             DoubleFloat.tolerance = null;
         }
@@ -2048,7 +2042,7 @@ namespace SymbolismTests
 
             var Pi = new Symbol("Pi");
 
-            var eqs = and(
+            var eqs = And(
 
                 cos(th) == (xB - xA) / d,
                 sin(th) == (yA - yB) / d,
@@ -2078,25 +2072,25 @@ namespace SymbolismTests
                 .CheckVariable(ay)
                 .SimplifyEquation()
                 .AssertEqTo(
-                    or(
-                        and(
-                            xB == -(sin(th) / cos(th) + sqrt((cos(th) ^ -2) * (sin(th) ^ 2))) * (vxA ^ 2) / ay,
+                    Or(
+                        And(
+                            xB == -(sin(th) / cos(th) + Sqrt((cos(th) ^ -2) * (sin(th) ^ 2))) * (vxA ^ 2) / ay,
                             ay / (vxA ^ 2) != 0,
                             sin(th) / cos(th) * xB != 0,
                             ay != 0),
-                        and(
-                            xB == -(sin(th) / cos(th) - sqrt((cos(th) ^ -2) * (sin(th) ^ 2))) * (vxA ^ 2) / ay,
+                        And(
+                            xB == -(sin(th) / cos(th) - Sqrt((cos(th) ^ -2) * (sin(th) ^ 2))) * (vxA ^ 2) / ay,
                             ay / (vxA ^ 2) != 0,
                             sin(th) / cos(th) * xB != 0,
                             ay != 0)))
                 .SubstituteEqLs(vals)
                 .SimplifyEquation()
                 .AssertEqTo(
-                    or(
-                        and(
+                    Or(
+                        And(
                             xB == 89.312185996136435,
                             xB != 0),
-                        and(
+                        And(
                             xB == 7.0805039835788038E-15,
                             xB != 0)));
 
@@ -2107,14 +2101,14 @@ namespace SymbolismTests
                 .LogicalExpand()
                 .CheckVariable(yB)
                 .AssertEqTo(
-                    and(
+                    And(
                         yB == 2 * (sin(th) ^ 2) * (vxA ^ 2) / ay / (cos(th) ^ 2),
                         -ay * (cos(th) ^ 2) / (sin(th) ^ 2) / (vxA ^ 2) / 2 != 0,
                         yB != 0,
                         ay != 0))
                 .SubstituteEqLs(vals)
                 .AssertEqTo(
-                    and(
+                    And(
                         yB == -62.537065888482395,
                         yB != 0));
 
@@ -2124,19 +2118,19 @@ namespace SymbolismTests
                 .IsolateVariable(tAB)
                 .LogicalExpand().CheckVariable(ay).SimplifyEquation().SimplifyLogical()
                 .AssertEqTo(
-                    or(
-                        and(
-                            tAB == -(sin(th) * vxA / cos(th) + sqrt((sin(th) ^ 2) * (vxA ^ 2) / (cos(th) ^ 2))) / ay,
+                    Or(
+                        And(
+                            tAB == -(sin(th) * vxA / cos(th) + Sqrt((sin(th) ^ 2) * (vxA ^ 2) / (cos(th) ^ 2))) / ay,
                             ay != 0,
                             sin(th) * tAB * vxA / cos(th) != 0),
-                        and(
-                            tAB == -(sin(th) * vxA / cos(th) - sqrt((sin(th) ^ 2) * (vxA ^ 2) / (cos(th) ^ 2))) / ay,
+                        And(
+                            tAB == -(sin(th) * vxA / cos(th) - Sqrt((sin(th) ^ 2) * (vxA ^ 2) / (cos(th) ^ 2))) / ay,
                             ay != 0,
                             sin(th) * tAB * vxA / cos(th) != 0)))
                 .SubstituteEqLs(vals)
                 .CheckVariable(tAB).SimplifyEquation()
                 .AssertEqTo(
-                    and(
+                    And(
                         tAB == 3.5724874398454571,
                         tAB != 0));
 
@@ -2149,13 +2143,13 @@ namespace SymbolismTests
                 .SimplifyEquation()
                 .CheckVariable(ay)
                 .AssertEqTo(
-                    or(
-                        and(
-                            vyB == -ay * (sin(th) * vxA / (ay * cos(th)) + sqrt((sin(th) ^ 2) * (vxA ^ 2) / ((ay ^ 2) * (cos(th) ^ 2)))),
+                    Or(
+                        And(
+                            vyB == -ay * (sin(th) * vxA / (ay * cos(th)) + Sqrt((sin(th) ^ 2) * (vxA ^ 2) / ((ay ^ 2) * (cos(th) ^ 2)))),
                             sin(th) * vxA * vyB / (ay * cos(th)) != 0,
                             ay != 0),
-                        and(
-                            vyB == -ay * (sin(th) * vxA / (ay * cos(th)) - sqrt((sin(th) ^ 2) * (vxA ^ 2) / ((ay ^ 2) * (cos(th) ^ 2)))),
+                        And(
+                            vyB == -ay * (sin(th) * vxA / (ay * cos(th)) - Sqrt((sin(th) ^ 2) * (vxA ^ 2) / ((ay ^ 2) * (cos(th) ^ 2)))),
                             sin(th) * vxA * vyB / (ay * cos(th)) != 0,
                             ay != 0)))
                 .SubstituteEqLs(vals)
@@ -2163,7 +2157,7 @@ namespace SymbolismTests
                 .SimplifyEquation()
                 .CheckVariable(vyB)
                 .AssertEqTo(
-                    and(
+                    And(
                         vyB == -35.010376910485483,
                         vyB != 0));
 
@@ -2202,7 +2196,7 @@ namespace SymbolismTests
             var thB = new Symbol("thB");
             var vB = new Symbol("vB");
 
-            var eqs = and(
+            var eqs = And(
 
                 vxB == vxA + ax * tAB,
                 vyB == vyA + ay * tAB,
@@ -2227,17 +2221,17 @@ namespace SymbolismTests
                 .IsolateVariable(vxA)
                 .LogicalExpand()
                 .AssertEqTo(
-                    or(
-                        and(
-                            vxA == ay * (xB ^ 2) / yA / 4 * sqrt(-8 / ay * (xB ^ -2) * yA),
+                    Or(
+                        And(
+                            vxA == ay * (xB ^ 2) / yA / 4 * Sqrt(-8 / ay * (xB ^ -2) * yA),
                             2 / ay * (xB ^ -2) * yA != 0,
                             xB != 0),
-                        and(
-                            vxA == -ay * (xB ^ 2) / yA / 4 * sqrt(-8 / ay * (xB ^ -2) * yA),
+                        And(
+                            vxA == -ay * (xB ^ 2) / yA / 4 * Sqrt(-8 / ay * (xB ^ -2) * yA),
                             2 / ay * (xB ^ -2) * yA != 0,
                             xB != 0)))
                 .SubstituteEqLs(vals)
-                .AssertEqTo(or(vxA == -3.3417722634053204, vxA == 3.3417722634053204));
+                .AssertEqTo(Or(vxA == -3.3417722634053204, vxA == 3.3417722634053204));
 
             eqs
                 .SubstituteEqLs(zeros)
@@ -2247,20 +2241,20 @@ namespace SymbolismTests
                 .SimplifyLogical()
                 .IsolateVariable(thB)
                 .AssertEqTo(
-                    and(
+                    And(
                         -tan(thB) / ay != 0,
                         thB == new Atan(-2 * yA / xB),
                         xB != 0))
                 .SubstituteEqLs(vals)
                 .AssertEqTo(
-                    and(
+                    And(
                         0.1020408163265306 * tan(thB) != 0,
                         thB == -0.88760488150470185));
 
             DoubleFloat.tolerance = null;
         }
 
-        Func<MathObject, MathObject> SumDifferenceFormulaFunc = elt =>
+        readonly Func<MathObject, MathObject> SumDifferenceFormulaFunc = elt =>
         {
             // sin(u) cos(v) - cos(u) sin(v) -> sin(u - v)
 
@@ -2280,13 +2274,15 @@ namespace SymbolismTests
                         var u_ = ((item as Product).elts[1] as Cos).args[0];
                         var v_ = ((item as Product).elts[2] as Sin).args[0];
 
-                        Func<MathObject, bool> match = obj =>
-                            obj is Product &&
-                            (obj as Product).elts[0] is Cos &&
-                            (obj as Product).elts[1] is Sin &&
+                        bool match(MathObject obj)
+                        {
+                            return obj is Product &&
+                                                        (obj as Product).elts[0] is Cos &&
+                                                        (obj as Product).elts[1] is Sin &&
 
-                            ((obj as Product).elts[1] as Sin).args[0] == u_ &&
-                            ((obj as Product).elts[0] as Cos).args[0] == v_;
+                                                        ((obj as Product).elts[1] as Sin).args[0] == u_ &&
+                                                        ((obj as Product).elts[0] as Cos).args[0] == v_;
+                        }
 
                         if (items.Any(obj => match(obj)))
                         {
@@ -2316,7 +2312,7 @@ namespace SymbolismTests
                 .AssertEqTo(sin(u - v));
         }
 
-        Func<MathObject, MathObject> SumDifferenceFormulaAFunc = elt =>
+        readonly Func<MathObject, MathObject> SumDifferenceFormulaAFunc = elt =>
         {
             if (elt is Sum)
             {
@@ -2333,7 +2329,7 @@ namespace SymbolismTests
                         var u_ = ((item as Product).elts[0] as Cos).args[0];
                         var v_ = ((item as Product).elts[1] as Sin).args[0];
 
-                        Func<MathObject, bool> match = obj =>
+                        bool match(MathObject obj) =>
                             obj is Product &&
                             (obj as Product).elts[0] is Cos &&
                             (obj as Product).elts[1] is Sin &&
@@ -2371,7 +2367,7 @@ namespace SymbolismTests
                 .AssertEqTo(sin(u + v));
         }
 
-        Func<MathObject, MathObject> DoubleAngleFormulaFunc =
+        readonly Func<MathObject, MathObject> DoubleAngleFormulaFunc =
             elt =>
             {
                 // sin(u) cos(u) -> sin(2 u) / 2
@@ -2417,7 +2413,7 @@ namespace SymbolismTests
                 return elt;
             };
 
-        Func<MathObject, MathObject> SinCosToTanFunc = elt =>
+        readonly Func<MathObject, MathObject> SinCosToTanFunc = elt =>
         {
             // sin(x) / cos(x) -> tan(x)
 
@@ -2567,20 +2563,20 @@ namespace SymbolismTests
                         .EliminateVariables(yB, vxA, vyA, vxB, xB)
                         .IsolateVariable(tAB);
 
-                    and(
-                        or(thA == (20).ToRadians(), thA == (70).ToRadians()),
+                    And(
+                        Or(thA == (20).ToRadians(), thA == (70).ToRadians()),
                         tAB_eq,
                         tAC == tAB * 2)
                         .LogicalExpand()
                         .EliminateVariables(thA, tAB)
 
-                        .AssertEqTo(or(
+                        .AssertEqTo(Or(
                             tAC == -2 * sin(Pi / 9) * vA / ay,
                             tAC == -2 * sin(7 * Pi / 18) * vA / ay))
 
                         .SubstituteEqLs(vals)
                         .AssertEqTo(
-                            or(
+                            Or(
                                 tAC == 1.7450007312534115,
                                 tAC == 4.794350106050552));
                 }
@@ -2620,7 +2616,7 @@ namespace SymbolismTests
 
             var Pi = new Symbol("Pi");
 
-            var eqs = and(
+            var eqs = And(
                 vxA == vA * cos(thA),
                 vyA == vA * sin(thA),
 
@@ -2645,7 +2641,7 @@ namespace SymbolismTests
                         .EliminateVariable(vyA)
 
                         .AssertEqTo(
-                            and(
+                            And(
                                 vxB == cos(thA) * vA,
                                 vyB == ay * tAB + sin(thA) * vA,
                                 xB == cos(thA) * tAB * vA,
@@ -2654,7 +2650,7 @@ namespace SymbolismTests
                         .SubstituteEqLs(vals)
 
                         .AssertEqTo(
-                            and(
+                            And(
                                 vxB == 172.07293090531385,
                                 vyB == -165.85438671330249,
                                 xB == 7227.0630980231817,
@@ -2708,7 +2704,7 @@ namespace SymbolismTests
 
             var Pi = new Symbol("Pi");
 
-            var eqs = and(
+            var eqs = And(
 
                 xC - xA == 3 * yB,
 
@@ -2800,7 +2796,7 @@ namespace SymbolismTests
 
             var phi = new Symbol("phi");
 
-            var eqs = and(
+            var eqs = And(
 
                 vxA == vA * cos(thA),
                 vyA == vA * sin(thA),
@@ -2849,14 +2845,14 @@ namespace SymbolismTests
                         .Substitute(phi, new Atan(yB / xB).Simplify())
 
                         .AssertEqTo(
-                            or(
+                            Or(
                                 thA == -(asin(ay * cos(atan(yB / xB)) * (vA ^ -2) * xB + -1 * cos(atan(yB / xB)) * yB / xB) - atan(yB / xB)) / 2,
                                 thA == -(-asin(ay * cos(atan(yB / xB)) * (vA ^ -2) * xB - cos(atan(yB / xB)) * yB / xB) - atan(yB / xB) + Pi) / 2))
 
                         .SubstituteEqLs(vals)
 
                         .AssertEqTo(
-                            or(
+                            Or(
                                 thA == 0.39034573609628065,
                                 thA == -1.5806356857788124))
                         ;
@@ -2881,7 +2877,10 @@ namespace SymbolismTests
             // (b) Does the ball approach the crossbar while still 
             //     rising or while falling ?
 
-            Func<MathObject, MathObject> sqrt = obj => obj ^ (new Integer(1) / 2);
+            //MathObject sqrt(MathObject obj)
+            //{
+            //    return obj ^ (new Integer(1) / 2);
+            //}
 
             var xA = new Symbol("xA");
             var yA = new Symbol("yA");
@@ -2910,7 +2909,7 @@ namespace SymbolismTests
 
             var goal_height = new Symbol("goal_height");
 
-            var eqs = and(
+            var eqs = And(
 
                 vxA == vA * cos(thA),
                 vyA == vA * sin(thA),
@@ -3008,7 +3007,7 @@ namespace SymbolismTests
             var h = new Symbol("h");
 
 
-            var eqs = and(
+            var eqs = And(
 
                 vxA == vA * cos(thA),
                 vyA == vA * sin(thA),
@@ -3112,7 +3111,7 @@ namespace SymbolismTests
 
             var Pi = new Symbol("Pi");
 
-            var eqs = and(
+            var eqs = And(
 
                 //vxA == vA * cos(thA),
                 //vyA == vA * sin(thA),
@@ -3168,17 +3167,17 @@ namespace SymbolismTests
 
                         .AssertEqTo(
 
-                            or(
-                                and(ay != 0, tAC == (ay ^ -1) * sqrt(-2 * ay * (-1 * yA + yB)) + -1 * (ay ^ -1) * sqrt(2 * ay * (-1 * yB + yC))),
-                                and(ay != 0, tAC == (ay ^ -1) * sqrt(-2 * ay * (-1 * yA + yB)) + (ay ^ -1) * sqrt(2 * ay * (-1 * yB + yC))),
-                                and(ay != 0, tAC == -1 * (ay ^ -1) * sqrt(-2 * ay * (-1 * yA + yB)) + -1 * (ay ^ -1) * sqrt(2 * ay * (-1 * yB + yC))),
-                                and(ay != 0, tAC == -1 * (ay ^ -1) * sqrt(-2 * ay * (-1 * yA + yB)) + (ay ^ -1) * sqrt(2 * ay * (-1 * yB + yC)))))
+                            Or(
+                                And(ay != 0, tAC == (ay ^ -1) * Sqrt(-2 * ay * (-1 * yA + yB)) + -1 * (ay ^ -1) * Sqrt(2 * ay * (-1 * yB + yC))),
+                                And(ay != 0, tAC == (ay ^ -1) * Sqrt(-2 * ay * (-1 * yA + yB)) + (ay ^ -1) * Sqrt(2 * ay * (-1 * yB + yC))),
+                                And(ay != 0, tAC == -1 * (ay ^ -1) * Sqrt(-2 * ay * (-1 * yA + yB)) + -1 * (ay ^ -1) * Sqrt(2 * ay * (-1 * yB + yC))),
+                                And(ay != 0, tAC == -1 * (ay ^ -1) * Sqrt(-2 * ay * (-1 * yA + yB)) + (ay ^ -1) * Sqrt(2 * ay * (-1 * yB + yC)))))
 
                         .SubstituteEqLs(vals)
 
                         .AssertEqTo(
 
-                            or(
+                            Or(
                                 tAC == 0.028747849043843032,
                                 tAC == -0.85188272280886768,
                                 tAC == 0.85188272280886768,
@@ -3203,17 +3202,17 @@ namespace SymbolismTests
 
                         .AssertEqTo(
 
-                            or(
-                                and(ay != 0, vxA == xC * ((-1 * sqrt(-2 * (ay ^ -1) * (-1 * yA + yB)) + -1 * (ay ^ -1) * sqrt(2 * ay * (-1 * yB + yC))) ^ -1)),
-                                and(ay != 0, vxA == xC * ((-1 * sqrt(-2 * (ay ^ -1) * (-1 * yA + yB)) + (ay ^ -1) * sqrt(2 * ay * (-1 * yB + yC))) ^ -1)),
-                                and(ay != 0, vxA == xC * ((sqrt(-2 * (ay ^ -1) * (-1 * yA + yB)) + -1 * (ay ^ -1) * sqrt(2 * ay * (-1 * yB + yC))) ^ -1)),
-                                and(ay != 0, vxA == xC * ((sqrt(-2 * (ay ^ -1) * (-1 * yA + yB)) + (ay ^ -1) * sqrt(2 * ay * (-1 * yB + yC))) ^ -1))))
+                            Or(
+                                And(ay != 0, vxA == xC * ((-1 * Sqrt(-2 * (ay ^ -1) * (-1 * yA + yB)) + -1 * (ay ^ -1) * Sqrt(2 * ay * (-1 * yB + yC))) ^ -1)),
+                                And(ay != 0, vxA == xC * ((-1 * Sqrt(-2 * (ay ^ -1) * (-1 * yA + yB)) + (ay ^ -1) * Sqrt(2 * ay * (-1 * yB + yC))) ^ -1)),
+                                And(ay != 0, vxA == xC * ((Sqrt(-2 * (ay ^ -1) * (-1 * yA + yB)) + -1 * (ay ^ -1) * Sqrt(2 * ay * (-1 * yB + yC))) ^ -1)),
+                                And(ay != 0, vxA == xC * ((Sqrt(-2 * (ay ^ -1) * (-1 * yA + yB)) + (ay ^ -1) * Sqrt(2 * ay * (-1 * yB + yC))) ^ -1))))
 
                         .SubstituteEqLs(vals)
 
                         .AssertEqTo(
 
-                            or(
+                            Or(
                                 vxA == 97.398591307814215,
                                 vxA == -3.286837407346058,
                                 vxA == 3.286837407346058,
@@ -3233,14 +3232,14 @@ namespace SymbolismTests
                         .LogicalExpand().SimplifyEquation().CheckVariable(ay)
 
                         .AssertEqTo(
-                            or(
-                                and(ay != 0, vyA == ay * sqrt(-2 * (ay ^ -1) * (-1 * yA + yB))),
-                                and(ay != 0, vyA == -1 * ay * sqrt(-2 * (ay ^ -1) * (-1 * yA + yB)))))
+                            Or(
+                                And(ay != 0, vyA == ay * Sqrt(-2 * (ay ^ -1) * (-1 * yA + yB))),
+                                And(ay != 0, vyA == -1 * ay * Sqrt(-2 * (ay ^ -1) * (-1 * yA + yB)))))
 
                         .SubstituteEqLs(vals)
 
                         .AssertEqTo(
-                            or(
+                            Or(
                                 vyA == -4.0333608814486217,
                                 vyA == 4.0333608814486217));
                 }
@@ -3258,11 +3257,11 @@ namespace SymbolismTests
 
                         .AssertEqTo(
 
-                            or(
-                                and(ay != 0, tan(thA) == -1 * (xC ^ -1) * sqrt(-2 * ay * (-1 * yA + yB)) * ((ay ^ -1) * sqrt(-2 * ay * (-1 * yA + yB)) + -1 * sqrt(2 * (ay ^ -1) * (-1 * yB + yC)))),
-                                and(ay != 0, tan(thA) == -1 * (xC ^ -1) * sqrt(-2 * ay * (-1 * yA + yB)) * ((ay ^ -1) * sqrt(-2 * ay * (-1 * yA + yB)) + sqrt(2 * (ay ^ -1) * (-1 * yB + yC)))),
-                                and(ay != 0, tan(thA) == (xC ^ -1) * sqrt(-2 * ay * (-1 * yA + yB)) * (-1 * (ay ^ -1) * sqrt(-2 * ay * (-1 * yA + yB)) + -1 * sqrt(2 * (ay ^ -1) * (-1 * yB + yC)))),
-                                and(ay != 0, tan(thA) == (xC ^ -1) * sqrt(-2 * ay * (-1 * yA + yB)) * (-1 * (ay ^ -1) * sqrt(-2 * ay * (-1 * yA + yB)) + sqrt(2 * (ay ^ -1) * (-1 * yB + yC))))
+                            Or(
+                                And(ay != 0, tan(thA) == -1 * (xC ^ -1) * Sqrt(-2 * ay * (-1 * yA + yB)) * ((ay ^ -1) * Sqrt(-2 * ay * (-1 * yA + yB)) + -1 * Sqrt(2 * (ay ^ -1) * (-1 * yB + yC)))),
+                                And(ay != 0, tan(thA) == -1 * (xC ^ -1) * Sqrt(-2 * ay * (-1 * yA + yB)) * ((ay ^ -1) * Sqrt(-2 * ay * (-1 * yA + yB)) + Sqrt(2 * (ay ^ -1) * (-1 * yB + yC)))),
+                                And(ay != 0, tan(thA) == (xC ^ -1) * Sqrt(-2 * ay * (-1 * yA + yB)) * (-1 * (ay ^ -1) * Sqrt(-2 * ay * (-1 * yA + yB)) + -1 * Sqrt(2 * (ay ^ -1) * (-1 * yB + yC)))),
+                                And(ay != 0, tan(thA) == (xC ^ -1) * Sqrt(-2 * ay * (-1 * yA + yB)) * (-1 * (ay ^ -1) * Sqrt(-2 * ay * (-1 * yA + yB)) + Sqrt(2 * (ay ^ -1) * (-1 * yB + yC))))
 
                                 ))
 
@@ -3271,7 +3270,7 @@ namespace SymbolismTests
                         .SubstituteEqLs(vals)
 
                         .AssertEqTo(
-                            or(
+                            Or(
                                 thA == 0.88702813023277882,
                                 thA == -0.041387227947930878,
                                 thA == -0.041387227947930878,
@@ -3333,7 +3332,7 @@ namespace SymbolismTests
 
             var Pi = new Symbol("Pi");
 
-            var eqs = and(
+            var eqs = And(
 
                 Fx == F * cos(th),
                 Fy == F * sin(th),
@@ -3350,7 +3349,7 @@ namespace SymbolismTests
 
                 F3x == F3 * cos(th3), F3y == F3 * sin(th3),
 
-                a == sqrt((ax ^ 2) + (ay ^ 2))
+                a == Sqrt((ax ^ 2) + (ay ^ 2))
 
                 );
 
@@ -3383,7 +3382,7 @@ namespace SymbolismTests
                         .AssertEqTo(
 
                             a ==
-                                sqrt(
+                                Sqrt(
                                     ((cos(th1) * F1 + cos(th2) * F2) ^ 2) * (m ^ -2) +
                                     (cos(atan(((cos(th1) * F1 + cos(th2) * F2) ^ -1) * (F1 * sin(th1) + F2 * sin(th2)))) ^ -2) *
                                     ((cos(th1) * F1 + cos(th2) * F2) ^ 2) *
@@ -3519,7 +3518,7 @@ namespace SymbolismTests
 
             var Pi = new Symbol("Pi");
 
-            var eqs = and(
+            var eqs = And(
 
                 Fx == F * cos(th),
                 Fy == F * sin(th),
@@ -3534,7 +3533,7 @@ namespace SymbolismTests
                 F2x == F2 * cos(th2), F2y == F2 * sin(th2),
                 F3x == F3 * cos(th3), F3y == F3 * sin(th3),
 
-                a == sqrt((ax ^ 2) + (ay ^ 2))
+                a == Sqrt((ax ^ 2) + (ay ^ 2))
 
                 );
 
@@ -3663,7 +3662,7 @@ namespace SymbolismTests
 
             var d = new Symbol("d");
 
-            var eqs = and(
+            var eqs = And(
 
                 Fx == F * cos(th),
                 Fy == F * sin(th),
@@ -3678,7 +3677,7 @@ namespace SymbolismTests
                 F2x == F2 * cos(th2), F2y == F2 * sin(th2),
                 //F3x == F3 * cos(th3), F3y == F3 * sin(th3),
 
-                a == sqrt((ax ^ 2) + (ay ^ 2)),
+                a == Sqrt((ax ^ 2) + (ay ^ 2)),
 
                 xB == xA + vxA * tAB + ax * (tAB ^ 2) / 2,
 
@@ -3721,7 +3720,7 @@ namespace SymbolismTests
                         .IsolateVariable(ax)
 
                         .AssertEqTo(
-                            and(
+                            And(
                                 ax == g * sin(incline),
                                 d != 0));
                 }
@@ -3738,13 +3737,13 @@ namespace SymbolismTests
                         .IsolateVariable(tAB).LogicalExpand().CheckVariable(d)
 
                         .AssertEqTo(
-                            or(
-                                and(
-                                    tAB == -sqrt(2 * d * g * sin(incline)) / sin(incline) / g,
+                            Or(
+                                And(
+                                    tAB == -Sqrt(2 * d * g * sin(incline)) / sin(incline) / g,
                                     -g * sin(incline) / 2 != 0,
                                     d != 0),
-                                and(
-                                    tAB == sqrt(2 * d * g * sin(incline)) / sin(incline) / g,
+                                And(
+                                    tAB == Sqrt(2 * d * g * sin(incline)) / sin(incline) / g,
                                     -g * sin(incline) / 2 != 0,
                                     d != 0))
                         );
@@ -3762,15 +3761,15 @@ namespace SymbolismTests
                         .EliminateVariable(n)
 
                         .AssertEqTo(
-                            or(
-                                and(
+                            Or(
+                                And(
                                     -g * sin(incline) / 2 != 0,
-                                    vxB == -sqrt(2 * d * g * sin(incline)),
+                                    vxB == -Sqrt(2 * d * g * sin(incline)),
                                     d != 0
                                 ),
-                                and(
+                                And(
                                     -g * sin(incline) / 2 != 0,
-                                    vxB == sqrt(2 * d * g * sin(incline)),
+                                    vxB == Sqrt(2 * d * g * sin(incline)),
                                     d != 0))
                         );
                 }
@@ -3808,7 +3807,7 @@ namespace SymbolismTests
             var g = new Symbol("g");
 
 
-            var eqs = and(
+            var eqs = And(
 
                 F_m1 == F1_m1 - F2_m1,
                 F_m2 == F2_m2 - F1_m2,
@@ -3946,7 +3945,7 @@ namespace SymbolismTests
 
             var Pi = new Symbol("Pi");
 
-            var eqs = and(
+            var eqs = And(
 
                 ax_m2 == ay_m1,                     // the block moves right as the ball moves up
 
@@ -4107,10 +4106,9 @@ namespace SymbolismTests
 
             var m1 = new Symbol("m1");
             var m2 = new Symbol("m2");
+            _ = new Symbol("Pi");
 
-            var Pi = new Symbol("Pi");
-
-            var eqs = and(
+            var eqs = And(
 
                 blk.ax == bal.ay,                   // the block moves right as the ball moves up
 
@@ -4248,7 +4246,7 @@ namespace SymbolismTests
 
             var mu_s = new Symbol("mu_s");          // coefficient of static friction
 
-            var eqs = and(
+            var eqs = And(
 
                 F1x_m1 == F1_m1 * cos(th1_m1),
                 F2x_m1 == F2_m1 * cos(th2_m1),
@@ -4369,7 +4367,7 @@ namespace SymbolismTests
 
             var mu_k = new Symbol("mu_k");          // coefficient of kinetic friction
 
-            var eqs = and(
+            var eqs = And(
 
                 a == ax_m1,
 
@@ -4544,7 +4542,7 @@ namespace SymbolismTests
 
             var mu_k = new Symbol("mu_k");          // coefficient of kinetic friction
 
-            var eqs = and(
+            var eqs = And(
 
                 ax_m1 == ay_m2,                     // the block moves right as the ball moves up
 
@@ -4678,7 +4676,7 @@ namespace SymbolismTests
             var m1 = new Symbol("m1");
             var m2 = new Symbol("m2");
 
-            var eqs = and(
+            var eqs = And(
 
                 blk.ax == bal.ay,                   // the block moves right as the ball moves up
 
@@ -4795,7 +4793,7 @@ namespace SymbolismTests
             var th1 = new Symbol("th1");
             var th2 = new Symbol("th2");
 
-            var eqs = and(
+            var eqs = And(
 
                 F1x_m1 == F1_m1 * cos(th1_m1),
                 F2x_m1 == F2_m1 * cos(th2_m1),
@@ -4982,7 +4980,7 @@ namespace SymbolismTests
             var T1 = new Symbol("T1");
             var T2 = new Symbol("T2");
 
-            var eqs = and(
+            var eqs = And(
 
                 m1 == m2,
 
@@ -5139,7 +5137,7 @@ namespace SymbolismTests
             var T1 = new Symbol("T1");
             var T2 = new Symbol("T2");
 
-            var eqs = and(
+            var eqs = And(
 
                 b1.Equations(),
                 b2.Equations()
@@ -5269,7 +5267,7 @@ namespace SymbolismTests
             var Pi = new Symbol("Pi");
             var g = new Symbol("g");
 
-            var eqs = and(
+            var eqs = And(
 
                 Fg_b == b.m * g,
                 Fg_c == c.m * g,
@@ -5421,7 +5419,7 @@ namespace SymbolismTests
 
             var g = new Symbol("g");
 
-            var eqs = and(
+            var eqs = And(
 
                  T1 == F,
                  T2 == T3,
@@ -5516,7 +5514,7 @@ namespace SymbolismTests
             var g = new Symbol("g");
             var a = new Symbol("a");
 
-            var eqs = and(
+            var eqs = And(
 
                 blk1.Equations(),
                 blk2.Equations(),
@@ -5607,7 +5605,7 @@ namespace SymbolismTests
             var vf = new Symbol("vf");
             var vi = new Symbol("vi");
 
-            var eqs = and(
+            var eqs = And(
 
                 W == F * d,
 
@@ -5630,30 +5628,30 @@ namespace SymbolismTests
 
                 .AssertEqTo(
 
-                    or(
-                        and(
-                            vf == sqrt(-2 * m * (-d * F - m * (vi ^ 2) / 2)) / m,
+                    Or(
+                        And(
+                            vf == Sqrt(-2 * m * (-d * F - m * (vi ^ 2) / 2)) / m,
                             m != 0),
-                        and(
-                            vf == -sqrt(-2 * m * (-d * F - m * (vi ^ 2) / 2)) / m,
+                        And(
+                            vf == -Sqrt(-2 * m * (-d * F - m * (vi ^ 2) / 2)) / m,
                             m != 0)))
 
                 .SubstituteEq(vi == 0)
 
                 .AssertEqTo(
 
-                    or(
-                        and(
-                            vf == sqrt(2 * d * F * m) / m,
+                    Or(
+                        And(
+                            vf == Sqrt(2 * d * F * m) / m,
                             m != 0),
-                        and(
-                            vf == -sqrt(2 * d * F * m) / m,
+                        And(
+                            vf == -Sqrt(2 * d * F * m) / m,
                             m != 0)))
 
                 .SubstituteEqLs(vals)
 
                 .AssertEqTo(
-                    or(
+                    Or(
                         vf == 3.4641016151377544,
                         vf == -3.4641016151377544));
 
@@ -5685,7 +5683,7 @@ namespace SymbolismTests
 
             var μk = new Symbol("μk");
 
-            var eqs = and(
+            var eqs = And(
 
                 Kf == m * (vf ^ 2) / 2,
                 Ki == m * (vi ^ 2) / 2,
@@ -5722,17 +5720,17 @@ namespace SymbolismTests
                 .LogicalExpand().SimplifyEquation().SimplifyLogical().CheckVariable(m)
                 .SubstituteEq(vi == 0)
                 .AssertEqTo(
-                    or(
-                        and(
-                            vf == -sqrt(2 * m * (d * F - d * g * m * μk)) / m,
+                    Or(
+                        And(
+                            vf == -Sqrt(2 * m * (d * F - d * g * m * μk)) / m,
                             m != 0),
-                        and(
-                            vf == sqrt(2 * m * (d * F - d * g * m * μk)) / m,
+                        And(
+                            vf == Sqrt(2 * m * (d * F - d * g * m * μk)) / m,
                             m != 0)))
 
                 .SubstituteEqLs(vals)
 
-                .AssertEqTo(or(vf == -1.7832554500127007, vf == 1.7832554500127007));
+                .AssertEqTo(Or(vf == -1.7832554500127007, vf == 1.7832554500127007));
 
         }
 
@@ -5770,7 +5768,7 @@ namespace SymbolismTests
 
             var x_max = new Symbol("x_max");
 
-            var eqs = and(
+            var eqs = And(
 
                 W_s == k * (x_max ^ 2) / 2,
 
@@ -5797,17 +5795,17 @@ namespace SymbolismTests
                     .LogicalExpand().SimplifyEquation().SimplifyLogical().CheckVariable(m)
 
                     .AssertEqTo(
-                        or(
-                            and(
-                                vf == sqrt(-2 * m * (d * fk - m * (vi ^ 2) / 2 - k * (x_max ^ 2) / 2)) / m,
+                        Or(
+                            And(
+                                vf == Sqrt(-2 * m * (d * fk - m * (vi ^ 2) / 2 - k * (x_max ^ 2) / 2)) / m,
                                 m != 0),
-                            and(
-                                vf == -sqrt(-2 * m * (d * fk - m * (vi ^ 2) / 2 - k * (x_max ^ 2) / 2)) / m,
+                            And(
+                                vf == -Sqrt(-2 * m * (d * fk - m * (vi ^ 2) / 2 - k * (x_max ^ 2) / 2)) / m,
                                 m != 0)))
 
                     .SubstituteEqLs(vals)
 
-                    .AssertEqTo(or(vf == 0.5, vf == -0.5));
+                    .AssertEqTo(Or(vf == 0.5, vf == -0.5));
             }
 
             // vf
@@ -5821,7 +5819,7 @@ namespace SymbolismTests
 
                     .SubstituteEqLs(vals)
 
-                    .AssertEqTo(or(vf == 0.3872983346207417, vf == -0.3872983346207417));
+                    .AssertEqTo(Or(vf == 0.3872983346207417, vf == -0.3872983346207417));
             }
 
         }
@@ -5851,7 +5849,7 @@ namespace SymbolismTests
 
             var len = new Symbol("len");
 
-            var eqs = and(
+            var eqs = And(
 
                 yA == -len,
 
@@ -5895,7 +5893,7 @@ namespace SymbolismTests
             var xA = new Symbol("xA");
             var xB = new Symbol("xB");
 
-            var eqs = and(
+            var eqs = And(
 
                 WsA == k * (xA ^ 2) / 2,
                 WsB == k * (xB ^ 2) / 2,
@@ -5960,7 +5958,7 @@ namespace SymbolismTests
 
             var μk = new Symbol("μk");
 
-            var eqs = and(
+            var eqs = And(
 
                 n == m * g,
 
@@ -5990,28 +5988,28 @@ namespace SymbolismTests
                 .LogicalExpand().SimplifyEquation().SimplifyLogical().CheckVariable(m)
 
                 .AssertEqTo(
-                    and(
+                    And(
                         m != 0,
                         W_F == d * F,
                         W_f == -d * g * m * μk))
 
                 .SubstituteEqLs(vals)
 
-                .AssertEqTo(and(W_F == 650, W_f == -588.0));
+                .AssertEqTo(And(W_F == 650, W_f == -588.0));
 
             // ΣW
             eqs
                 .EliminateVariables(W_F, W_f, fk, n, Ki, Kf)
 
                 .AssertEqTo(
-                    and(
+                    And(
                         ΣW == m * (vf ^ 2) / 2 - m * (vi ^ 2) / 2,
                         ΣW == d * F - d * g * m * μk,
                         m != 0))
 
                 .SubstituteEqLs(vals)
 
-                .AssertEqTo(and(ΣW == 20 * (vf ^ 2), ΣW == 62.0));
+                .AssertEqTo(And(ΣW == 20 * (vf ^ 2), ΣW == 62.0));
 
             // vf
             eqs
@@ -6020,17 +6018,17 @@ namespace SymbolismTests
                 .LogicalExpand().SimplifyEquation().SimplifyLogical().CheckVariable(m)
 
                 .AssertEqTo(
-                    or(
-                        and(
-                            vf == sqrt(-2 * m * (-d * F - m * (vi ^ 2) / 2 + d * g * m * μk)) / m,
+                    Or(
+                        And(
+                            vf == Sqrt(-2 * m * (-d * F - m * (vi ^ 2) / 2 + d * g * m * μk)) / m,
                             m != 0),
-                        and(
-                            vf == -sqrt(-2 * m * (-d * F - m * (vi ^ 2) / 2 + d * g * m * μk)) / m,
+                        And(
+                            vf == -Sqrt(-2 * m * (-d * F - m * (vi ^ 2) / 2 + d * g * m * μk)) / m,
                             m != 0)))
 
                 .SubstituteEqLs(vals)
 
-                .AssertEqTo(or(vf == 1.7606816861659009, vf == -1.7606816861659009));
+                .AssertEqTo(Or(vf == 1.7606816861659009, vf == -1.7606816861659009));
         }
 
         [Fact]
@@ -6078,7 +6076,7 @@ namespace SymbolismTests
 
             var Pi = new Symbol("Pi");
 
-            var eqs = and(
+            var eqs = And(
 
                 F_g == m * g,
 
@@ -6114,7 +6112,7 @@ namespace SymbolismTests
                 .EliminateVariables(F_g, fk, n)
 
                 .AssertEqTo(
-                    and(
+                    And(
                         Kf == m * (vf ^ 2) / 2,
                         Ki == m * (vi ^ 2) / 2,
                         W_F == d * F,
@@ -6128,7 +6126,7 @@ namespace SymbolismTests
                 .SubstituteEqLs(vals)
 
                 .AssertEqTo(
-                    and(
+                    And(
                         Kf == 5.0 * (vf ^ 2),
                         Ki == 11.25,
                         W_F == 500.0,
@@ -6145,7 +6143,7 @@ namespace SymbolismTests
                 .SubstituteEqLs(vals)
 
                 .AssertEqTo(
-                    and(
+                    And(
                         Kf == 5.0 * (vf ^ 2),
                         Ki == 11.25,
                         ΣW == Kf - Ki,
@@ -6162,7 +6160,7 @@ namespace SymbolismTests
 
                 .SubstituteEqLs(vals)
 
-                .AssertEqTo(or(vf == 5.6476610396939435, vf == -5.6476610396939435));
+                .AssertEqTo(Or(vf == 5.6476610396939435, vf == -5.6476610396939435));
 
         }
 
@@ -6196,7 +6194,7 @@ namespace SymbolismTests
 
             var t = new Symbol("t");
 
-            var eqs = and(
+            var eqs = And(
 
                 Kf == m * (vf ^ 2) / 2,
                 Ki == m * (vi ^ 2) / 2,
@@ -6272,7 +6270,7 @@ namespace SymbolismTests
             var xi = new Symbol("xi");
             var xf = new Symbol("xf");
 
-            var eqs = and(
+            var eqs = And(
 
                 n == m * g,
 
@@ -6302,25 +6300,25 @@ namespace SymbolismTests
                 .LogicalExpand().SimplifyEquation().SimplifyLogical().CheckVariable(m)
 
                 .AssertEqTo(
-                    or(
-                        and(
-                            vf == sqrt(-2 * m * (-m * (vi ^ 2) / 2 + k * (xf ^ 2) / 2 - k * (xi ^ 2) / 2 + d * g * m * μk)) / m,
+                    Or(
+                        And(
+                            vf == Sqrt(-2 * m * (-m * (vi ^ 2) / 2 + k * (xf ^ 2) / 2 - k * (xi ^ 2) / 2 + d * g * m * μk)) / m,
                             m != 0
                         ),
-                        and(
-                            vf == -sqrt(-2 * m * (-m * (vi ^ 2) / 2 + k * (xf ^ 2) / 2 - k * (xi ^ 2) / 2 + d * g * m * μk)) / m,
+                        And(
+                            vf == -Sqrt(-2 * m * (-m * (vi ^ 2) / 2 + k * (xf ^ 2) / 2 - k * (xi ^ 2) / 2 + d * g * m * μk)) / m,
                             m != 0)))
 
                 .SubstituteEqLs(vals).SubstituteEq(μk == 0)
 
-                .AssertEqTo(or(vf == 0.79056941504209488, vf == -0.79056941504209488));
+                .AssertEqTo(Or(vf == 0.79056941504209488, vf == -0.79056941504209488));
 
             eqs
                 .EliminateVariables(Kf, Ki, ΣW, W_f, W_s, n, fk)
                 .IsolateVariable(vf)
                 .LogicalExpand().SimplifyEquation().SimplifyLogical().CheckVariable(m)
                 .SubstituteEqLs(vals).SubstituteEq(μk == 0.35)
-                .AssertEqTo(or(vf == 0.53103672189407025, vf == -0.53103672189407025));
+                .AssertEqTo(Or(vf == 0.53103672189407025, vf == -0.53103672189407025));
         }
 
         [Fact]
@@ -6340,7 +6338,7 @@ namespace SymbolismTests
 
             var vals = new List<Equation>() { m == 0.15, vi == 40.0, th == (30).ToRadians() };
 
-            var eqs = and(
+            var eqs = And(
 
                 vx == vi * cos(th),
 
@@ -6395,7 +6393,7 @@ namespace SymbolismTests
             var h = new Symbol("h");
             var y = new Symbol("y");
 
-            var eqs = and(
+            var eqs = And(
                 Ki == m * (vi ^ 2) / 2,
                 Kf == m * (vf ^ 2) / 2,
 
@@ -6423,9 +6421,9 @@ namespace SymbolismTests
                 .SubstituteEq(vi == 0)
 
                 .AssertEqTo(
-                    or(
-                        vf == -sqrt(2 * (g * h - g * y)),
-                        vf == sqrt(2 * (g * h - g * y))
+                    Or(
+                        vf == -Sqrt(2 * (g * h - g * y)),
+                        vf == Sqrt(2 * (g * h - g * y))
                     ));
 
             // vf
@@ -6437,9 +6435,9 @@ namespace SymbolismTests
                 .SubstituteEqLs(vals)
 
                 .AssertEqTo(
-                    or(
-                        vf == -sqrt(2 * (g * h + (vi ^ 2) / 2 - g * y)),
-                        vf == sqrt(2 * (g * h + (vi ^ 2) / 2 - g * y))
+                    Or(
+                        vf == -Sqrt(2 * (g * h + (vi ^ 2) / 2 - g * y)),
+                        vf == Sqrt(2 * (g * h + (vi ^ 2) / 2 - g * y))
                     ));
 
         }
@@ -6497,7 +6495,7 @@ namespace SymbolismTests
 
             var vf_sq = new Symbol("vf_sq");
 
-            var eqs = and(
+            var eqs = And(
 
                 Ki == m * (vi ^ 2) / 2,
                 Kf == m * (vf ^ 2) / 2,
@@ -6542,9 +6540,9 @@ namespace SymbolismTests
 
                 .AssertEqTo(
 
-                    or(
-                        vf == -sqrt(2 * (g * L - cos(thA) * g * L)),
-                        vf == sqrt(2 * (g * L - cos(thA) * g * L))
+                    Or(
+                        vf == -Sqrt(2 * (g * L - cos(thA) * g * L)),
+                        vf == Sqrt(2 * (g * L - cos(thA) * g * L))
                     )
 
                 )
@@ -6552,7 +6550,7 @@ namespace SymbolismTests
                 .SubstituteEqLs(numerical_vals).Substitute(3, 3.0)
 
                 .AssertEqTo(
-                    or(
+                    Or(
                         vf == -2.2916815161906787,
                         vf == 2.2916815161906787
                     )
@@ -6618,7 +6616,7 @@ namespace SymbolismTests
 
             var θ = new Symbol("θ");
 
-            var eqs = and(
+            var eqs = And(
 
                 yi == d * sin(θ),
 
@@ -6653,19 +6651,19 @@ namespace SymbolismTests
                 .LogicalExpand().SimplifyEquation().SimplifyLogical().CheckVariable(m)
 
                 .AssertEqTo(
-                    or(
-                        and(
-                            vf == -sqrt(2 * m * (-d * fk + m * (vi ^ 2) / 2 - g * m * yf + g * m * d * sin(θ))) / m,
+                    Or(
+                        And(
+                            vf == -Sqrt(2 * m * (-d * fk + m * (vi ^ 2) / 2 - g * m * yf + g * m * d * sin(θ))) / m,
                             m != 0
                         ),
-                        and(
-                            vf == sqrt(2 * m * (-d * fk + m * (vi ^ 2) / 2 - g * m * yf + g * m * d * sin(θ))) / m,
+                        And(
+                            vf == Sqrt(2 * m * (-d * fk + m * (vi ^ 2) / 2 - g * m * yf + g * m * d * sin(θ))) / m,
                             m != 0
                         )))
 
                 .SubstituteEqLs(vals)
 
-                .AssertEqTo(or(vf == -2.54296414970142, vf == 2.54296414970142));
+                .AssertEqTo(Or(vf == -2.54296414970142, vf == 2.54296414970142));
         }
 
         [Fact]
@@ -6711,7 +6709,7 @@ namespace SymbolismTests
 
             var d = new Symbol("d");
 
-            var eqs = and(
+            var eqs = And(
 
                 Ki == m * (vi ^ 2) / 2,
                 Kf == m * (vf ^ 2) / 2,
@@ -6745,14 +6743,14 @@ namespace SymbolismTests
                     .IsolateVariable(vf)
 
                     .AssertEqTo(
-                        or(
-                            vf == -sqrt(2 * g * yi),
-                            vf == sqrt(2 * g * yi)))
+                        Or(
+                            vf == -Sqrt(2 * g * yi),
+                            vf == Sqrt(2 * g * yi)))
 
                     .SubstituteEqLs(vals)
 
                     .AssertEqTo(
-                        or(
+                        Or(
                             vf == -6.2609903369994111,
                             vf == 6.2609903369994111));
             }

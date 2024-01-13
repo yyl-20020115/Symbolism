@@ -48,7 +48,7 @@ namespace Symbolism
                                 /
                                 (Factorial(k) * Factorial(n - k));
 
-                            s = s + (c * (f ^ (n - k))).ExpandProduct(r.ExpandPower(k));
+                            s += (c * (f ^ (n - k))).ExpandProduct(r.ExpandPower(k));
 
                             k++;
                         }
