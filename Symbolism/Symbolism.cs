@@ -328,8 +328,8 @@ public class DoubleFloat(double n) : Number
 
     public override bool Equals(object obj)
     {
-        if (obj is DoubleFloat && tolerance.HasValue)
-            return Math.Abs(val - (obj as DoubleFloat).val) < tolerance;
+        if (obj is DoubleFloat f&& tolerance.HasValue)
+            return Math.Abs(val - f.val) < tolerance;
 
         if (obj is DoubleFloat @float) return val == @float.val;
 
