@@ -183,9 +183,7 @@ public class KinematicObjectABC(string name)
 
     public Symbol ax = new ($"{name}.ax"), ay = new ($"{name}.ay");
 
-    public And EquationsAB()
-    {
-        return new And(
+    public And EquationsAB() => new(
 
             vxB == vxA + ax * tAB,
             vyB == vyA + ay * tAB,
@@ -194,11 +192,8 @@ public class KinematicObjectABC(string name)
             yB == yA + vyA * tAB + ay * (tAB ^ 2) / 2
 
             );
-    }
 
-    public And EquationsBC() =>
-
-        new (
+    public And EquationsBC() => new (
 
             vxC == vxB + ax * tBC,
             vyC == vyB + ay * tBC,
@@ -209,7 +204,6 @@ public class KinematicObjectABC(string name)
             );
 
     public And EquationsAC() =>
-
         new (
 
             vxC == vxA + ax * tAC,
@@ -221,7 +215,6 @@ public class KinematicObjectABC(string name)
             );
 
     public And TrigEquationsA() =>
-
         new (
 
             vxA == vA * Cos(thA),
@@ -252,11 +245,11 @@ public class Tests
     [Fact]
     public void Test3()
     {
-        DoubleFloat.DoubleFloatTolerance = 0.000000001;
+        MathObject.DoubleFloatTolerance = 0.000000001;
 
         Assert.True(new DoubleFloat(1.2000000000001).Equals(new DoubleFloat(1.200000000002)));
 
-        DoubleFloat.DoubleFloatTolerance = null;
+        MathObject.DoubleFloatTolerance = null;
     }
 
     [Fact] public void Test4() => Assert.False(new DoubleFloat(1.2).Equals(new DoubleFloat(1.23)));
