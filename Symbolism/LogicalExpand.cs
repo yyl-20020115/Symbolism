@@ -11,12 +11,12 @@ public static class Extensions
         switch (m)
         {
             case Or o:
-                    return o.Map(elt => elt.LogicalExpand());
+                return o.Map(elt => elt.LogicalExpand());
 
             case And a when a.args.Any(elt => elt is Or) && a.args.Count > 1:
                 {
-                    var before = new List<MathObject>();
                     Or or = null;
+                    var before = new List<MathObject>();
                     var after = new List<MathObject>();
 
                     foreach (var elt in a.args)

@@ -73,21 +73,21 @@ public abstract class MathObject
 
     #endregion
     //////////////////////////////////////////////////////////////////////
-    public static Equation operator ==(MathObject a, MathObject b) => new Equation(a, b);
-    public static Equation operator !=(MathObject a, MathObject b) => new Equation(a, b, Equation.Operators.NotEqual);
-    public static Equation operator <(MathObject a, MathObject b) => new Equation(a, b, Equation.Operators.LessThan);
-    public static Equation operator >(MathObject a, MathObject b) => new Equation(a, b, Equation.Operators.GreaterThan);
+    public static Equation operator ==(MathObject a, MathObject b) => new(a, b);
+    public static Equation operator !=(MathObject a, MathObject b) => new(a, b, Equation.Operators.NotEqual);
+    public static Equation operator <(MathObject a, MathObject b) => new(a, b, Equation.Operators.LessThan);
+    public static Equation operator >(MathObject a, MathObject b) => new(a, b, Equation.Operators.GreaterThan);
 
-    public static Equation operator ==(MathObject a, double b) => new Equation(a, new DoubleFloat(b));
-    public static Equation operator ==(double a, MathObject b) => new Equation(new DoubleFloat(a), b);
+    public static Equation operator ==(MathObject a, double b) => new(a, new DoubleFloat(b));
+    public static Equation operator ==(double a, MathObject b) => new(new DoubleFloat(a), b);
 
-    public static Equation operator !=(MathObject a, double b) => new Equation(a, new DoubleFloat(b), Equation.Operators.NotEqual);
-    public static Equation operator !=(double a, MathObject b) => new Equation(new DoubleFloat(a), b, Equation.Operators.NotEqual);
+    public static Equation operator !=(MathObject a, double b) => new(a, new DoubleFloat(b), Equation.Operators.NotEqual);
+    public static Equation operator !=(double a, MathObject b) => new(new DoubleFloat(a), b, Equation.Operators.NotEqual);
 
-    public static Equation operator ==(MathObject a, int b) => new Equation(a, new Integer(b));
-    public static Equation operator ==(int a, MathObject b) => new Equation(new Integer(a), b);
-    public static Equation operator !=(MathObject a, int b) => new Equation(a, new Integer(b), Equation.Operators.NotEqual);
-    public static Equation operator !=(int a, MathObject b) => new Equation(new Integer(a), b, Equation.Operators.NotEqual);
+    public static Equation operator ==(MathObject a, int b) => new(a, new Integer(b));
+    public static Equation operator ==(int a, MathObject b) => new(new Integer(a), b);
+    public static Equation operator !=(MathObject a, int b) => new(a, new Integer(b), Equation.Operators.NotEqual);
+    public static Equation operator !=(int a, MathObject b) => new(new Integer(a), b, Equation.Operators.NotEqual);
     //////////////////////////////////////////////////////////////////////
     public static MathObject operator +(MathObject a, MathObject b) => new Sum(a, b).Simplify();
     public static MathObject operator -(MathObject a, MathObject b) => new Difference(a, b).Simplify();
@@ -133,7 +133,7 @@ public abstract class MathObject
 
     public enum ToStringForms { Full, Standard }
 
-    public static ToStringForms ToStringForm = ToStringForms.Full;
+    public ToStringForms ToStringForm = ToStringForms.Full;
 
     public virtual string FullForm() => base.ToString();
 
@@ -293,7 +293,7 @@ public class Integer : Number
 
     public Integer(BigInteger n) { val = n; }
                     
-    public static implicit operator Integer(BigInteger n) => new Integer(n);
+    public static implicit operator Integer(BigInteger n) => new(n);
 
     // public static MathObject operator *(MathObject a, MathObject b) => new Product(a, b).Simplify();
 
@@ -307,7 +307,7 @@ public class Integer : Number
 
     public override int GetHashCode() => val.GetHashCode();
 
-    public override DoubleFloat ToDouble() => new DoubleFloat((double)val);
+    public override DoubleFloat ToDouble() => new((double)val);
 }
 
 public class DoubleFloat(double n) : Number
@@ -348,7 +348,7 @@ public class Fraction(Integer a, Integer b) : Number
 
     public override string FullForm() => numerator + "/" + denominator;
 
-    public override DoubleFloat ToDouble() => new DoubleFloat((double)numerator.val / (double)denominator.val);
+    public override DoubleFloat ToDouble() => new((double)numerator.val / (double)denominator.val);
     //////////////////////////////////////////////////////////////////////
 
     public override bool Equals(object obj) =>
@@ -600,7 +600,7 @@ public class Symbol(string str) : MathObject
 
 public static class ListConstructor
 {
-    public static List<T> List<T>(params T[] items) => new List<T>(items);
+    public static List<T> List<T>(params T[] items) => new(items);
 
     public static ImmutableList<T> ImList<T>(params T[] items) => ImmutableList.Create(items);
 }
@@ -695,7 +695,7 @@ public class And : Function
 
     public And() : base("and", AndProc, new List<MathObject>()) { }
 
-    public static And FromRange(IEnumerable<MathObject> ls) => new And(ls.ToArray());
+    public static And FromRange(IEnumerable<MathObject> ls) => new(ls.ToArray());
 
     public MathObject Add(MathObject obj) =>
         And.FromRange(args.Add(obj)).Simplify();
@@ -742,7 +742,7 @@ public class Or : Function
 
     public Or() : base("or", OrProc, new List<MathObject>()) { }
 
-    public static Or FromRange(IEnumerable<MathObject> ls) => new Or(ls.ToArray());
+    public static Or FromRange(IEnumerable<MathObject> ls) => new(ls.ToArray());
 
     public MathObject Map(Func<MathObject, MathObject> proc) => Or.FromRange(args.Select(proc)).Simplify();
 }
@@ -1039,7 +1039,7 @@ public class Product(params MathObject[] ls) : MathObject
 
         if (b is Fraction fraction) val = a.val * fraction.ToDouble().val;
                     
-        if (val == 1.0) return ImmutableList.Create<MathObject>();
+        if (val == 1.0) return [];
 
         return ImList<MathObject>(new DoubleFloat(val));
     }
@@ -1076,7 +1076,7 @@ public class Product(params MathObject[] ls) : MathObject
             {
                 var P = Rational.SimplifyRNE(new Product(elts[0], elts[1]));
                                     
-                if (P == 1) return ImmutableList.Create<MathObject>();
+                if (P == 1) return [];
 
                 return ImList(P);
             }
@@ -1091,7 +1091,7 @@ public class Product(params MathObject[] ls) : MathObject
             {
                 var res = OrderRelation.Base(p) ^ (OrderRelation.Exponent(p) + OrderRelation.Exponent(q));
                                     
-                if (res == 1) return ImmutableList.Create<MathObject>();
+                if (res == 1) return [];
 
                 return ImList(res);
             }
@@ -1189,9 +1189,9 @@ public class Sum(params MathObject[] ls) : MathObject
 
         if (b is Fraction fraction) val = a.val + fraction.ToDouble().val;
 
-        if (val == 0.0) return ImmutableList.Create<MathObject>();
+        if (val == 0.0) return [];
                     
-        return ImmutableList.Create<MathObject>(new DoubleFloat(val));
+        return [new DoubleFloat(val)];
     }
 
     static ImmutableList<MathObject> RecursiveSimplify(ImmutableList<MathObject> elts)
@@ -1231,7 +1231,7 @@ public class Sum(params MathObject[] ls) : MathObject
             {
                 var P = Rational.SimplifyRNE(new Sum(elts[0], elts[1]));
                                     
-                if (P == 0) return ImmutableList.Create<MathObject>();
+                if (P == 0) return [];
 
                 return ImList(P);
             }
@@ -1247,7 +1247,7 @@ public class Sum(params MathObject[] ls) : MathObject
             {
                 var res = p.Term() * (p.Const() + q.Const());
 
-                if (res == 0) return ImmutableList.Create<MathObject>();
+                if (res == 0) return [];
 
                 return ImList(res);
             }

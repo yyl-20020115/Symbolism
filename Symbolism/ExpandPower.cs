@@ -7,7 +7,7 @@ public static class Extensions
 {
     public static BigInteger Factorial(BigInteger n)
     {
-        var result = (BigInteger)1;
+        var result = BigInteger.One;
 
         for (var i = 1; i <= n; i++)
         {
@@ -20,9 +20,9 @@ public static class Extensions
 
     public static MathObject ExpandPower(this MathObject u, BigInteger n)
     {
-        if (u is Sum)
+        if (u is Sum sum)
         {
-            var f = (u as Sum).elts[0];
+            var f = sum.elts[0];
 
             var r = u - f;
 

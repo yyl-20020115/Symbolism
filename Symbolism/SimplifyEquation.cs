@@ -20,7 +20,9 @@ public static class Extensions
                                 p2.exp is Integer i &&
                                 i.val > 0
                                 ? p2.bas == 0
-                                : expr is And a ? a.Map(elt => elt.SimplifyEquation()) : expr is Or o ? o.Map(elt => elt.SimplifyEquation()) : expr,// x ^ 2 == 0   ->   x == 0
+                                : expr is And a ? a.Map(elt => elt.SimplifyEquation())
+                                : expr is Or o ? o.Map(elt => elt.SimplifyEquation()) 
+                                : expr,// x ^ 2 == 0   ->   x == 0
                                                                                                                                                     // x ^ 2 != 0   ->   x == 0
         };
 }

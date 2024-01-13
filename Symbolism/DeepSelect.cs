@@ -9,8 +9,7 @@ public static class Extensions
         var r = proc(obj);
         return r switch
         {
-            Power p => p.bas.DeepSelect(proc) ^
-                p.exp.DeepSelect(proc),
+            Power p => p.bas.DeepSelect(proc) ^ p.exp.DeepSelect(proc),
             Or o => o.Map(elt => elt.DeepSelect(proc)),
             And a => a.Map(elt => elt.DeepSelect(proc)),
             Equation e => new Equation(

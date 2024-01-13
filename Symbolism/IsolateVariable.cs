@@ -87,7 +87,7 @@ public static class Extensions
         // x ^ 2 == y
         // x ^ 2 - y == 0
 
-        if (eq.a.AlgebraicExpand().DegreeGpe(new List<MathObject>() { sym }) == 2 &&
+        if (eq.a.AlgebraicExpand().DegreeGpe([sym]) == 2 &&
             eq.b != 0)
         {
             return
@@ -162,7 +162,7 @@ public static class Extensions
 
         // a + a c == d
 
-        if (eq.a is Sum && (eq.a as Sum).elts.All(elt => elt.DegreeGpe(new List<MathObject>() { sym }) == 1))
+        if (eq.a is Sum && (eq.a as Sum).elts.All(elt => elt.DegreeGpe([sym]) == 1))
         {
             //return 
             //    (new Sum() { elts = (eq.a as Sum).elts.Select(elt => elt / sym).ToList() }.Simplify() == eq.b / sym)
@@ -250,14 +250,11 @@ public static class Extensions
         throw new Exception();
     }
 
-    public static MathObject IsolateVariable(this MathObject obj, Symbol sym)
+    public static MathObject IsolateVariable(this MathObject obj, Symbol sym) => obj switch
     {
-        if (obj is Or) return Or.FromRange((obj as Or).args.Select(elt => elt.IsolateVariable(sym))).Simplify();
-                                            
-        if (obj is And) return And.FromRange((obj as And).args.Select(elt => elt.IsolateVariable(sym))).Simplify();
-
-        if (obj is Equation) return (obj as Equation).IsolateVariableEq(sym);
-
-        throw new Exception();
-    }
+        Or o => Or.FromRange(o.args.Select(elt => elt.IsolateVariable(sym))).Simplify(),
+        And a => And.FromRange(a.args.Select(elt => elt.IsolateVariable(sym))).Simplify(),
+        Equation e => e.IsolateVariableEq(sym),
+        _ => throw new Exception()
+    };
 }

@@ -10,10 +10,7 @@ public static class Extensions
         switch (u)
         {
             case Equation eq:
-                {
-                    return eq.a.AlgebraicExpand() == eq.b.AlgebraicExpand();
-                }
-
+                return eq.a.AlgebraicExpand() == eq.b.AlgebraicExpand();
             case Sum s:
                 return s.Map(elt => elt.AlgebraicExpand());
             case Product p:
@@ -29,20 +26,15 @@ public static class Extensions
                     var bas = p.bas;
                     var exp = p.exp;
 
-                    if (exp is Integer i && i.val >= 2)
-                        return bas.AlgebraicExpand().ExpandPower(i.val);
-                    else
-                        return u;
+                    return exp is Integer i && i.val >= 2 ? bas.AlgebraicExpand().ExpandPower(i.val) : u;
                 }
 
             case Function f:
-                {
-                    return new Function(
-                        f.name,
-                        f.proc,
-                        f.args.ConvertAll(elt => elt.AlgebraicExpand()))
-                    .Simplify();
-                }
+                return new Function(
+                    f.name,
+                    f.proc,
+                    f.args.ConvertAll(elt => elt.AlgebraicExpand()))
+                .Simplify();
 
             default:
                 return u;

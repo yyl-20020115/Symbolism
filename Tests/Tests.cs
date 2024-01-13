@@ -71,41 +71,18 @@ namespace SymbolismTests
             => obj is Equation ? (MathObject)((obj as Equation).a + item == (obj as Equation).b + item) : throw new Exception();
     }
 
-    public class Obj2
+    public class Obj2(string name)
     {
-        public Symbol ΣFx;
-        public Symbol ΣFy;
-        public Symbol m;
-        public Symbol ax;
-        public Symbol ay;
+        public Symbol ΣFx = new Symbol($"{name}.ΣFx");
+        public Symbol ΣFy = new Symbol($"{name}.ΣFy");
+        public Symbol m = new Symbol($"{name}.m");
+        public Symbol ax = new Symbol($"{name}.ax");
+        public Symbol ay = new Symbol($"{name}.ay");
 
-        public Symbol F1, F2;
-        public Symbol th1, th2;
-        public Symbol F1x, F2x;
-        public Symbol F1y, F2y;
-
-        public Obj2(string name)
-        {
-            ΣFx = new Symbol($"{name}.ΣFx");
-            ΣFy = new Symbol($"{name}.ΣFy");
-
-            m = new Symbol($"{name}.m");
-
-            ax = new Symbol($"{name}.ax");
-            ay = new Symbol($"{name}.ay");
-
-            F1 = new Symbol($"{name}.F1");
-            F2 = new Symbol($"{name}.F2");
-
-            th1 = new Symbol($"{name}.th1");
-            th2 = new Symbol($"{name}.th2");
-
-            F1x = new Symbol($"{name}.F1x");
-            F2x = new Symbol($"{name}.F2x");
-
-            F1y = new Symbol($"{name}.F1y");
-            F2y = new Symbol($"{name}.F2y");
-        }
+        public Symbol F1 = new Symbol($"{name}.F1"), F2 = new Symbol($"{name}.F2");
+        public Symbol th1 = new Symbol($"{name}.th1"), th2 = new Symbol($"{name}.th2");
+        public Symbol F1x = new Symbol($"{name}.F1x"), F2x = new Symbol($"{name}.F2x");
+        public Symbol F1y = new Symbol($"{name}.F1y"), F2y = new Symbol($"{name}.F2y");
 
         public And Equations() => new And(
 
@@ -124,45 +101,18 @@ namespace SymbolismTests
                 );
     }
 
-    public class Obj3
+    public class Obj3(string name)
     {
-        public Symbol ΣFx;
-        public Symbol ΣFy;
-        public Symbol m;
-        public Symbol ax;
-        public Symbol ay;
+        public Symbol ΣFx = new Symbol($"{name}.ΣFx");
+        public Symbol ΣFy = new Symbol($"{name}.ΣFy");
+        public Symbol m = new Symbol($"{name}.m");
+        public Symbol ax = new Symbol($"{name}.ax");
+        public Symbol ay = new Symbol($"{name}.ay");
 
-        public Symbol F1, F2, F3;
-        public Symbol th1, th2, th3;
-        public Symbol F1x, F2x, F3x;
-        public Symbol F1y, F2y, F3y;
-
-        public Obj3(string name)
-        {
-            ΣFx = new Symbol($"{name}.ΣFx");
-            ΣFy = new Symbol($"{name}.ΣFy");
-
-            m = new Symbol($"{name}.m");
-
-            ax = new Symbol($"{name}.ax");
-            ay = new Symbol($"{name}.ay");
-
-            F1 = new Symbol($"{name}.F1");
-            F2 = new Symbol($"{name}.F2");
-            F3 = new Symbol($"{name}.F3");
-
-            th1 = new Symbol($"{name}.th1");
-            th2 = new Symbol($"{name}.th2");
-            th3 = new Symbol($"{name}.th3");
-
-            F1x = new Symbol($"{name}.F1x");
-            F2x = new Symbol($"{name}.F2x");
-            F3x = new Symbol($"{name}.F3x");
-
-            F1y = new Symbol($"{name}.F1y");
-            F2y = new Symbol($"{name}.F2y");
-            F3y = new Symbol($"{name}.F3y");
-        }
+        public Symbol F1 = new Symbol($"{name}.F1"), F2 = new Symbol($"{name}.F2"), F3 = new Symbol($"{name}.F3");
+        public Symbol th1 = new Symbol($"{name}.th1"), th2 = new Symbol($"{name}.th2"), th3 = new Symbol($"{name}.th3");
+        public Symbol F1x = new Symbol($"{name}.F1x"), F2x = new Symbol($"{name}.F2x"), F3x = new Symbol($"{name}.F3x");
+        public Symbol F1y = new Symbol($"{name}.F1y"), F2y = new Symbol($"{name}.F2y"), F3y = new Symbol($"{name}.F3y");
 
         public And Equations() => new And(
 
@@ -184,53 +134,18 @@ namespace SymbolismTests
                 );
     }
 
-    public class Obj5
+    public class Obj5(string name)
     {
-        public Symbol ΣFx;
-        public Symbol ΣFy;
-        public Symbol m;
-        public Symbol ax;
-        public Symbol ay;
+        public Symbol ΣFx = new Symbol($"{name}.ΣFx");
+        public Symbol ΣFy = new Symbol($"{name}.ΣFy");
+        public Symbol m = new Symbol($"{name}.m");
+        public Symbol ax = new Symbol($"{name}.ax");
+        public Symbol ay = new Symbol($"{name}.ay");
 
-        public Symbol F1, F2, F3, F4, F5;
-        public Symbol th1, th2, th3, th4, th5;
-        public Symbol F1x, F2x, F3x, F4x, F5x;
-        public Symbol F1y, F2y, F3y, F4y, F5y;
-
-        public Obj5(string name)
-        {
-            ΣFx = new Symbol($"{name}.ΣFx");
-            ΣFy = new Symbol($"{name}.ΣFy");
-
-            m = new Symbol($"{name}.m");
-
-            ax = new Symbol($"{name}.ax");
-            ay = new Symbol($"{name}.ay");
-
-            F1 = new Symbol($"{name}.F1");
-            F2 = new Symbol($"{name}.F2");
-            F3 = new Symbol($"{name}.F3");
-            F4 = new Symbol($"{name}.F4");
-            F5 = new Symbol($"{name}.F5");
-
-            th1 = new Symbol($"{name}.th1");
-            th2 = new Symbol($"{name}.th2");
-            th3 = new Symbol($"{name}.th3");
-            th4 = new Symbol($"{name}.th4");
-            th5 = new Symbol($"{name}.th5");
-
-            F1x = new Symbol($"{name}.F1x");
-            F2x = new Symbol($"{name}.F2x");
-            F3x = new Symbol($"{name}.F3x");
-            F4x = new Symbol($"{name}.F4x");
-            F5x = new Symbol($"{name}.F5x");
-
-            F1y = new Symbol($"{name}.F1y");
-            F2y = new Symbol($"{name}.F2y");
-            F3y = new Symbol($"{name}.F3y");
-            F4y = new Symbol($"{name}.F4y");
-            F5y = new Symbol($"{name}.F5y");
-        }
+        public Symbol F1 = new Symbol($"{name}.F1"), F2 = new Symbol($"{name}.F2"), F3 = new Symbol($"{name}.F3"), F4 = new Symbol($"{name}.F4"), F5 = new Symbol($"{name}.F5");
+        public Symbol th1 = new Symbol($"{name}.th1"), th2 = new Symbol($"{name}.th2"), th3 = new Symbol($"{name}.th3"), th4 = new Symbol($"{name}.th4"), th5 = new Symbol($"{name}.th5");
+        public Symbol F1x = new Symbol($"{name}.F1x"), F2x = new Symbol($"{name}.F2x"), F3x = new Symbol($"{name}.F3x"), F4x = new Symbol($"{name}.F4x"), F5x = new Symbol($"{name}.F5x");
+        public Symbol F1y = new Symbol($"{name}.F1y"), F2y = new Symbol($"{name}.F2y"), F3y = new Symbol($"{name}.F3y"), F4y = new Symbol($"{name}.F4y"), F5y = new Symbol($"{name}.F5y");
 
         public And Equations() => new And(
 
@@ -258,58 +173,19 @@ namespace SymbolismTests
                 );
     }
 
-    public class KinematicObjectABC
+    public class KinematicObjectABC(string name)
     {
-        public Symbol xA, yA, vxA, vyA, vA, thA;
-        public Symbol xB, yB, vxB, vyB, vB, thB;
-        public Symbol xC, yC, vxC, vyC, vC, thC;
+        public Symbol xA = new Symbol($"{name}.xA"), yA = new Symbol($"{name}.yA"), vxA = new Symbol($"{name}.vxA"), vyA = new Symbol($"{name}.vyA"), vA = new Symbol($"{name}.vA"), thA = new Symbol($"{name}.thA");
+        public Symbol xB = new Symbol($"{name}.xB"), yB = new Symbol($"{name}.yB"), vxB = new Symbol($"{name}.vxB"), vyB = new Symbol($"{name}.vyB"), vB = new Symbol($"{name}.vB"), thB = new Symbol($"{name}.thB");
+        public Symbol xC = new Symbol($"{name}.xC"), yC = new Symbol($"{name}.yC"), vxC = new Symbol($"{name}.vxC"), vyC = new Symbol($"{name}.vyC"), vC = new Symbol($"{name}.vC"), thC = new Symbol($"{name}.thC");
 
-        public Symbol tAB, tBC, tAC;
+        public Symbol tAB = new Symbol($"{name}.tAB"), tBC = new Symbol($"{name}.tBC"), tAC = new Symbol($"{name}.tAC");
 
-        public Symbol ax, ay;
+        public Symbol ax = new Symbol($"{name}.ax"), ay = new Symbol($"{name}.ay");
 
-        public KinematicObjectABC(string name)
+        public And EquationsAB()
         {
-            xA = new Symbol($"{name}.xA");
-            yA = new Symbol($"{name}.yA");
-
-            vxA = new Symbol($"{name}.vxA");
-            vyA = new Symbol($"{name}.vyA");
-
-            vA = new Symbol($"{name}.vA");
-            thA = new Symbol($"{name}.thA");
-
-
-            xB = new Symbol($"{name}.xB");
-            yB = new Symbol($"{name}.yB");
-
-            vxB = new Symbol($"{name}.vxB");
-            vyB = new Symbol($"{name}.vyB");
-
-            vB = new Symbol($"{name}.vB");
-            thB = new Symbol($"{name}.thB");
-
-
-            xC = new Symbol($"{name}.xC");
-            yC = new Symbol($"{name}.yC");
-
-            vxC = new Symbol($"{name}.vxC");
-            vyC = new Symbol($"{name}.vyC");
-
-            vC = new Symbol($"{name}.vC");
-            thC = new Symbol($"{name}.thC");
-
-            tAB = new Symbol($"{name}.tAB");
-            tBC = new Symbol($"{name}.tBC");
-            tAC = new Symbol($"{name}.tAC");
-
-            ax = new Symbol($"{name}.ax");
-            ay = new Symbol($"{name}.ay");
-        }
-
-        public And EquationsAB() =>
-
-            new And(
+            return new And(
 
                 vxB == vxA + ax * tAB,
                 vyB == vyA + ay * tAB,
@@ -318,6 +194,7 @@ namespace SymbolismTests
                 yB == yA + vyA * tAB + ay * (tAB ^ 2) / 2
 
                 );
+        }
 
         public And EquationsBC() =>
 
@@ -366,7 +243,7 @@ namespace SymbolismTests
         readonly Symbol y = new Symbol("y");
         readonly Symbol z = new Symbol("z");
 
-        Integer Int(int n) => new Integer(n);
+        static Integer Int(int n) => new(n);
 
         #region
         [Fact] public void Test1() => Assert.True(new DoubleFloat(1.2).Equals(new DoubleFloat(1.2)));
@@ -509,12 +386,12 @@ namespace SymbolismTests
 
         [Fact] public void Test74() => (Sqrt(a * b) * (Sqrt(a * b) / a) / c).AssertEqTo(b / c);
 
-        void AssertToStringMatch(MathObject obj, string str) => Assert.True(obj.ToString() == str);
+        static void AssertToStringMatch(MathObject obj, string str) => Assert.True(obj.ToString() == str);
 
         [Fact]
         public void Test75()
         {
-            MathObject.ToStringForm = MathObject.ToStringForms.Full;
+            //MathObject.ToStringForm = MathObject.ToStringForms.Full;
 
             AssertToStringMatch(x + y + z, "x + y + z");
 
@@ -542,7 +419,7 @@ namespace SymbolismTests
         [Fact]
         public void Test76()
         {
-            MathObject.ToStringForm = MathObject.ToStringForms.Standard;
+            //MathObject.ToStringForm = MathObject.ToStringForms.Standard;
 
             Assert.True((x + y).ToString() == "x + y", "(x + y).ToString()");
 
@@ -972,22 +849,22 @@ namespace SymbolismTests
 
         [Fact]
         public void Test206() => Assert.True(
-            ((3 * w * x ^ 2) * (y ^ 3) * (z ^ 4)).DegreeGpe(new List<MathObject>() { x, z }) == 6,
+            ((3 * w * x ^ 2) * (y ^ 3) * (z ^ 4)).DegreeGpe([x, z]) == 6,
             "((3 * w * x ^ 2) * (y ^ 3) * (z ^ 4)).DegreeGpe(new List<MathObject>() { x, z })");
 
         [Fact]
         public void Test207() => Assert.True(
-            ((a * x ^ 2) + b * x + c).DegreeGpe(new List<MathObject>() { x }) == 2,
+            ((a * x ^ 2) + b * x + c).DegreeGpe([x]) == 2,
             "((a * x ^ 2) + b * x + c).DegreeGpe(new List<MathObject>() { x })");
 
         [Fact]
         public void Test208() => Assert.True(
-            (a * (Sin(x) ^ 2) + b * Sin(x) + c).DegreeGpe(new List<MathObject>() { Sin(x) }) == 2,
+            (a * (Sin(x) ^ 2) + b * Sin(x) + c).DegreeGpe([Sin(x)]) == 2,
             "(a * (Sin(x) ^ 2) + b * Sin(x) + c).DegreeGpe(new List<MathObject>() { Sin(x) })");
 
         [Fact]
         public void Test209() => Assert.True(
-            (2 * (x ^ 2) * y * (z ^ 3) + w * x * (z ^ 6)).DegreeGpe(new List<MathObject>() { x, z }) == 7,
+            (2 * (x ^ 2) * y * (z ^ 3) + w * x * (z ^ 6)).DegreeGpe([x, z]) == 7,
             "(2 * (x ^ 2) * y * (z ^ 3) + w * x * (z ^ 6)).DegreeGpe(new List<MathObject>() { x, z })");
 
         #endregion

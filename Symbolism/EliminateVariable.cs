@@ -27,14 +27,13 @@ public static class Extensions
                 .Where(eq => (eq.Operator == Equation.Operators.NotEqual && eq.a == 1 / sym && eq.b == 0) == false)
                 .ToList()
                 .CheckVariableEqLs(sym);
-        
+
         // x + y == z && x / y == 0 && x != 0   -> false
 
-        if (eqs.Any(eq => eq.Operator == Equation.Operators.Equal && eq.a.Numerator() == sym && eq.a.Denominator().FreeOf(sym) && eq.b == 0) &&
-            eqs.Any(eq => eq == (sym != 0)))
-            return false;
-                    
-        return And.FromRange(eqs.Select(eq => eq as MathObject));
+        return eqs.Any(eq => eq.Operator == Equation.Operators.Equal && eq.a.Numerator() == sym && eq.a.Denominator().FreeOf(sym) && eq.b == 0) &&
+            eqs.Any(eq => eq == (sym != 0))
+            ? (MathObject)false
+            : And.FromRange(eqs.Select(eq => eq as MathObject));
     }
 
     public static MathObject CheckVariable(this MathObject expr, Symbol sym)
@@ -146,11 +145,7 @@ public static class Extensions
         }
 
         if (expr is Or o)
-        {
             return Or.FromRange(o.args.Select(and_expr => and_expr.EliminateVariable(sym)));
-
-            // expr.Map(and_expr => and_expr.EliminateVar(sym))
-        }
 
         throw new Exception();
     }
