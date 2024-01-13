@@ -11,7 +11,7 @@ public static class Extensions
         expr switch
         {
             Equation e when e.a is Product p && p.elts.Any(elt => elt is Number) && e.b == 0 => new Equation(
-                                    Product.FromRange((e.a as Product).elts.Where(elt => !(elt is Number))).Simplify(),
+                                    Product.FromRange((e.a as Product).elts.Where(elt => elt is not Number)).Simplify(),
                                     0,
                                     e.Operator).Simplify(),
             _ => expr is Equation e2 &&

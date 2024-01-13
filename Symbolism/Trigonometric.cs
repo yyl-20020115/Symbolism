@@ -135,7 +135,7 @@ public class Sin(MathObject param) : Function("sin", SinProc, new[] { param })
 
         // sin(a + b + ... + n/2 * Pi)
 
-        Func<MathObject, bool> Product_n_div_2_Pi = elt =>
+        bool Product_n_div_2_Pi(MathObject elt) =>
             elt is Product &&
             (
                 (elt as Product).elts[0] is Integer ||
@@ -264,12 +264,12 @@ public class Cos(MathObject param) : Function("cos", CosProc, new[] { param })
 
         if (u is Sum && (u as Sum).elts.Any(elt => elt == Pi))
             return -Cos(u - Pi);
-        
+
         // cos(n Pi + x + y)
 
         // n * Pi where n is Exact && abs(n) >= 2
 
-        Func<MathObject, bool> Product_n_Pi = elt =>
+        bool Product_n_Pi(MathObject elt) =>
                 (elt is Product) &&
                 (
                     (elt as Product).elts[0] is Integer ||
@@ -288,7 +288,7 @@ public class Cos(MathObject param) : Function("cos", CosProc, new[] { param })
             return Cos((ls[0] - pi_elt) + Mod(n, 2) * Pi);
         }
 
-        Func<MathObject, bool> Product_n_div_2_Pi = elt =>
+        bool Product_n_div_2_Pi(MathObject elt) =>
             elt is Product &&
             (
                 (elt as Product).elts[0] is Integer ||

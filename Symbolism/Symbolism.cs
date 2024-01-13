@@ -312,7 +312,7 @@ public class Integer : Number
 
 public class DoubleFloat(double n) : Number
 {
-    public static double? tolerance;
+    public static double? tolerance = null;
 
     public readonly double val = n;
 
@@ -341,13 +341,10 @@ public class DoubleFloat(double n) : Number
     public override DoubleFloat ToDouble() => this;
 }
 
-public class Fraction : Number
+public class Fraction(Integer a, Integer b) : Number
 {
-    public readonly Integer numerator;
-    public readonly Integer denominator;
-
-    public Fraction(Integer a, Integer b)
-    { numerator = a; denominator = b; }
+    public readonly Integer numerator = a;
+    public readonly Integer denominator = b;
 
     public override string FullForm() => numerator + "/" + denominator;
 
@@ -940,21 +937,15 @@ public class Power(MathObject a, MathObject b) : MathObject
         if (v is DoubleFloat @float && w is Integer integer)
             return new DoubleFloat(Math.Pow(@float.val, (double) integer.val));
 
-        switch (v)
+        return v switch
         {
-            case DoubleFloat _ when w is Fraction fraction:
-                return new DoubleFloat(Math.Pow(((DoubleFloat)v).val, fraction.ToDouble().val));
-            case Integer _ when w is DoubleFloat float1:
-                return new DoubleFloat(Math.Pow((double)((Integer)v).val, float1.val));
-            case Fraction _ when w is DoubleFloat float2:
-                return new DoubleFloat(Math.Pow(((Fraction)v).ToDouble().val, float2.val));
-            case Power _ when w is Integer:
-                return ((Power)v).bas ^ ((Power)v).exp * w;
-            case Product _ when w is Integer:
-                return (v as Product).Map(elt => elt ^ w);
-            default:
-                return new Power(v, w);
-        }
+            DoubleFloat _ when w is Fraction fraction => new DoubleFloat(Math.Pow(((DoubleFloat)v).val, fraction.ToDouble().val)),
+            Integer _ when w is DoubleFloat float1 => new DoubleFloat(Math.Pow((double)((Integer)v).val, float1.val)),
+            Fraction _ when w is DoubleFloat float2 => new DoubleFloat(Math.Pow(((Fraction)v).ToDouble().val, float2.val)),
+            Power _ when w is Integer => ((Power)v).bas ^ ((Power)v).exp * w,
+            Product _ when w is Integer => (v as Product).Map(elt => elt ^ w),
+            _ => new Power(v, w),
+        };
     }
 
     public override MathObject Numerator()
@@ -982,7 +973,7 @@ public class Product(params MathObject[] ls) : MathObject
 {
     public readonly ImmutableList<MathObject> elts = ImmutableList.Create(ls);
 
-    public static Product FromRange(IEnumerable<MathObject> ls) => new Product(ls.ToArray());
+    public static Product FromRange(IEnumerable<MathObject> ls) => new (ls.ToArray());
 
     public override string FullForm() =>
         string.Join(" * ", elts.ConvertAll(elt => elt.Precedence() < Precedence() ? $"({elt})" : $"{elt}"));
@@ -1157,7 +1148,7 @@ public class Sum(params MathObject[] ls) : MathObject
 {
     public readonly ImmutableList<MathObject> elts = ImmutableList.Create(ls);
 
-    public static Sum FromRange(IEnumerable<MathObject> ls) => new Sum(ls.ToArray());
+    public static Sum FromRange(IEnumerable<MathObject> ls) => new(ls.ToArray());
 
     public override int GetHashCode() => elts.GetHashCode();
 

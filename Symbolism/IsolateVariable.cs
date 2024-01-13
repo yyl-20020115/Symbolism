@@ -130,7 +130,7 @@ public static class Extensions
 
         // (x + y == z).IsolateVariable(x)
 
-        if (eq.a is Sum && (eq.a as Sum).elts.Any(elt => elt.FreeOf(sym)))
+        if (eq.a is Sum s2&& s2.elts.Any(elt => elt.FreeOf(sym)))
         {
             var items = ((Sum)eq.a).elts.FindAll(elt => elt.FreeOf(sym));
 
@@ -145,7 +145,7 @@ public static class Extensions
             //var new_b = eq.b; items.ForEach(elt => new_b = new_b - elt);
 
             var new_a = Sum.FromRange((eq.a as Sum).elts.Where(elt => items.Contains(elt) == false)).Simplify();
-            var new_b = eq.b; items.ForEach(elt => new_b = new_b - elt);
+            var new_b = eq.b; items.ForEach(elt => new_b -= elt);
 
             // (new_a as Sum).Where(elt => items.Contains(elt) == false)
 
@@ -197,9 +197,9 @@ public static class Extensions
 
         if (eq.a is Product && (eq.a as Product).elts.All(elt => elt.Has(sym))) return eq;
 
-        if (eq.a is Product)
+        if (eq.a is Product product)
         {
-            var items = ((Product)eq.a).elts.FindAll(elt => elt.FreeOf(sym));
+            var items = product.elts.FindAll(elt => elt.FreeOf(sym));
 
             return IsolateVariableEq(
                 new Equation(
