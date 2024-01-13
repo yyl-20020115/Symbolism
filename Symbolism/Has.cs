@@ -1,45 +1,32 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
-namespace Symbolism
+namespace Symbolism.Has;
+
+public static class Extensions
 {
-    namespace Has
-    {
-        public static class Extensions
-        {
-            public static bool Has(this MathObject obj, MathObject a)
+    public static bool Has(this MathObject obj, MathObject a) => obj == a
+            ? true
+            : obj switch
             {
-                if (obj == a) return true;
-                
-                if (obj is Equation) return (obj as Equation).a.Has(a) || (obj as Equation).b.Has(a);
+                Equation e => e.a.Has(a) || e.b.Has(a),
+                Power power => power.bas.Has(a) || power.exp.Has(a),
+                Product product => product.elts.Any(elt => elt.Has(a)),
+                Sum sum => sum.elts.Any(elt => elt.Has(a)),
+                Function function => function.args.Any(elt => elt.Has(a)),
+                _ => false
+            };
 
-                if (obj is Power) return (((Power)obj).bas.Has(a) || ((Power)obj).exp.Has(a));
-
-                if (obj is Product) return ((Product)obj).elts.Any(elt => elt.Has(a));
-                if (obj is Sum) return ((Sum)obj).elts.Any(elt => elt.Has(a));
-                if (obj is Function) return ((Function)obj).args.Any(elt => elt.Has(a));
-
-                return false;
-            }
-
-            public static bool Has(this MathObject obj, Func<MathObject, bool> proc)
+    public static bool Has(this MathObject obj, Func<MathObject, bool> proc) => proc(obj) 
+        | obj switch
             {
-                if (proc(obj)) return true;
+                Equation e => e.a.Has(proc) || e.b.Has(proc),
+                Power p => p.bas.Has(proc) || p.exp.Has(proc),
+                Product t => t.elts.Any(elt => elt.Has(proc)),
+                Sum s => s.elts.Any(elt => elt.Has(proc)),
+                Function f => f.args.Any(elt => elt.Has(proc)),
+                _ => false
+            };
 
-                if (obj is Equation) return (obj as Equation).a.Has(proc) || (obj as Equation).b.Has(proc);
-
-                if (obj is Power) return (obj as Power).bas.Has(proc) || (obj as Power).exp.Has(proc);
-
-                if (obj is Product) return (obj as Product).elts.Any(elt => elt.Has(proc));
-                if (obj is Sum) return (obj as Sum).elts.Any(elt => elt.Has(proc));
-                if (obj is Function) return (obj as Function).args.Any(elt => elt.Has(proc));
-
-                return false;
-            }
-
-            public static bool FreeOf(this MathObject obj, MathObject a) => !obj.Has(a);
-        }
-    }
+    public static bool FreeOf(this MathObject obj, MathObject a) => !obj.Has(a);
 }

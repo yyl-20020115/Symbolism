@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8</TargetFramework>
+    <TargetFramework>net7</TargetFramework>
 
     <PackageId>Symbolism</PackageId>
     <Version>1.0.4</Version>

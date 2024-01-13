@@ -15,9 +15,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 using Xunit;
 
 using Symbolism;
@@ -56,29 +53,22 @@ namespace SymbolismTests
             return a;
         }
 
-        public static MathObject MultiplyBothSidesBy(this MathObject obj, MathObject item)
-        {
+        public static MathObject MultiplyBothSidesBy(this MathObject obj, MathObject item) =>
             //if (obj is Equation)
             //    return (obj as Equation).a * item == (obj as Equation).b * item;
 
-            if (obj is Equation)
-                return new Equation(
-                    (obj as Equation).a * item,
-                    (obj as Equation).b * item,
-                    (obj as Equation).Operator);
+            obj switch
+            {
+                Equation e => new Equation(
+                    e.a * item,
+                    e.b * item,
+                    e.Operator),
+                And a => a.Map(elt => elt.MultiplyBothSidesBy(item)),
+                _ => throw new Exception()
+            };
 
-            if (obj is And) return (obj as And).Map(elt => elt.MultiplyBothSidesBy(item));
-
-            throw new Exception();
-        }
-
-        public static MathObject AddToBothSides(this MathObject obj, MathObject item)
-        {
-            if (obj is Equation)
-                return (obj as Equation).a + item == (obj as Equation).b + item;
-
-            throw new Exception();
-        }
+        public static MathObject AddToBothSides(this MathObject obj, MathObject item) 
+            => obj is Equation ? (MathObject)((obj as Equation).a + item == (obj as Equation).b + item) : throw new Exception();
     }
 
     public class Obj2
@@ -117,9 +107,7 @@ namespace SymbolismTests
             F2y = new Symbol($"{name}.F2y");
         }
 
-        public And Equations()
-        {
-            return new And(
+        public And Equations() => new And(
 
                 F1x == F1 * cos(th1),
                 F1y == F1 * sin(th1),
@@ -134,7 +122,6 @@ namespace SymbolismTests
                 ΣFy == m * ay
 
                 );
-        }
     }
 
     public class Obj3
@@ -177,9 +164,7 @@ namespace SymbolismTests
             F3y = new Symbol($"{name}.F3y");
         }
 
-        public And Equations()
-        {
-            return new And(
+        public And Equations() => new And(
 
                 F1x == F1 * cos(th1),
                 F1y == F1 * sin(th1),
@@ -197,7 +182,6 @@ namespace SymbolismTests
                 ΣFy == m * ay
 
                 );
-        }
     }
 
     public class Obj5
@@ -248,9 +232,7 @@ namespace SymbolismTests
             F5y = new Symbol($"{name}.F5y");
         }
 
-        public And Equations()
-        {
-            return new And(
+        public And Equations() => new And(
 
                 F1x == F1 * cos(th1),
                 F1y == F1 * sin(th1),
@@ -274,7 +256,6 @@ namespace SymbolismTests
                 ΣFy == m * ay
 
                 );
-        }
     }
 
     public class KinematicObjectABC

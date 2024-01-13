@@ -1,47 +1,25 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-namespace Symbolism
+namespace Symbolism.DeepSelect;
+
+public static class Extensions
 {
-    namespace DeepSelect
+    public static MathObject DeepSelect(this MathObject obj, Func<MathObject, MathObject> proc)
     {
-        public static class Extensions
+        var r = proc(obj);
+        return r switch
         {
-            public static MathObject DeepSelect(this MathObject obj, Func<MathObject, MathObject> proc)
-            {
-                var result = proc(obj);
-
-                if (result is Power)
-                    return
-                        (result as Power).bas.DeepSelect(proc) ^
-                        (result as Power).exp.DeepSelect(proc);
-                
-                if (result is Or)
-                    return (result as Or).Map(elt => elt.DeepSelect(proc));
-
-                if (result is And)
-                    return (result as And).Map(elt => elt.DeepSelect(proc));
-
-                if (result is Equation)
-                    return
-                        new Equation(
-                            (result as Equation).a.DeepSelect(proc),
-                            (result as Equation).b.DeepSelect(proc),
-                            (result as Equation).Operator);
-
-                if (result is Sum)
-                    return
-                        (result as Sum).Map(elt => elt.DeepSelect(proc));
-
-                if (result is Product)
-                    return
-                        (result as Product).Map(elt => elt.DeepSelect(proc));
-
-                return result;
-            }
-        }
+            Power p => p.bas.DeepSelect(proc) ^
+                p.exp.DeepSelect(proc),
+            Or o => o.Map(elt => elt.DeepSelect(proc)),
+            And a => a.Map(elt => elt.DeepSelect(proc)),
+            Equation e => new Equation(
+                    e.a.DeepSelect(proc),
+                    e.b.DeepSelect(proc),
+                    e.Operator),
+            Sum s => s.Map(elt => elt.DeepSelect(proc)),
+            Product t => t.Map(elt => elt.DeepSelect(proc)),
+            _ => r
+        };
     }
-    
 }

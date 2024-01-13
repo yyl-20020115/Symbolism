@@ -1,53 +1,47 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Symbolism
+﻿namespace Symbolism.RationalizeExpression
 {
-    namespace RationalizeExpression
+    public static class Extensions
     {
-        public static class Extensions
+        public static MathObject RationalizeSum(MathObject u, MathObject v)
         {
-            static MathObject RationalizeSum(MathObject u, MathObject v)
-            {
-                var m = u.Numerator();
-                var r = u.Denominator();
-                var n = v.Numerator();
-                var s = v.Denominator();
+            var m = u.Numerator();
+            var r = u.Denominator();
+            var n = v.Numerator();
+            var s = v.Denominator();
 
-                if (r == 1 && s == 1) return u + v;
+            if (r == 1 && s == 1) return u + v;
 
-                return RationalizeSum(m * s, n * r) / (r * s);
-            }
-            
-            public static MathObject RationalizeExpression(this MathObject u)
+            return RationalizeSum(m * s, n * r) / (r * s);
+        }
+
+        public static MathObject RationalizeExpression(this MathObject u)
+        {
+            switch (u)
             {
-                if (u is Equation)
+                case Equation e:
                     return new Equation(
-                        (u as Equation).a.RationalizeExpression(),
-                        (u as Equation).b.RationalizeExpression(),
-                        (u as Equation).Operator);
-                    
-                if (u is Power)
-                    return (u as Power).bas.RationalizeExpression() ^ (u as Power).exp;
-
-                if (u is Product)
+                                e.a.RationalizeExpression(),
+                                e.b.RationalizeExpression(),
+                                e.Operator);
+                case Power p:
+                    return p.bas.RationalizeExpression() ^ p.exp;
+                case Product t:
                     return
-                        (u as Product).Map(elt => elt.RationalizeExpression());
-                        
-                if (u is Sum)
-                {
-                    var f = (u as Sum).elts[0];
+                                    t.Map(elt => elt.RationalizeExpression());
+                case Sum s:
+                    {
+                        var f = s.elts[0];
 
-                    var g = f.RationalizeExpression();
-                    var r = (u - f).RationalizeExpression();
+                        var g = f.RationalizeExpression();
+                        var r = (u - f).RationalizeExpression();
 
-                    return RationalizeSum(g, r);
-                }
+                        return RationalizeSum(g, r);
+                    }
 
-                return u;
+                default:
+                    return u;
             }
         }
     }
+
 }

@@ -1,40 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using Symbolism.DegreeGpe;
+﻿using Symbolism.DegreeGpe;
 using Symbolism.LeadingCoefficientGpe;
 using Symbolism.AlgebraicExpand;
 
-namespace Symbolism
+namespace Symbolism.PolynomialDivision;
+
+public static class Extensions
 {
-    namespace PolynomialDivision
+    public static (MathObject quotient, MathObject remainder) PolynomialDivision(MathObject u, MathObject v, MathObject x)
     {
-        public static class Extensions
+        var q = (MathObject)0;
+        var r = u;
+        var m = r.DegreeGpe([x]);
+        var n = v.DegreeGpe([x]);
+        var lcv = v.LeadingCoefficientGpe(x);
+
+        while (m >= n && r != 0)
         {
-            public static (MathObject quotient, MathObject remainder) PolynomialDivision(MathObject u, MathObject v, MathObject x)
-            {
-                var q = (MathObject)0;
-                var r = u;
-                var m = r.DegreeGpe(new List<MathObject> { x });
-                var n = v.DegreeGpe(new List<MathObject> { x });
-                var lcv = v.LeadingCoefficientGpe(x);
+            var lcr = r.LeadingCoefficientGpe(x);
+            var s = lcr / lcv;
 
-                while (m >= n && r != 0)
-                {
-                    var lcr = r.LeadingCoefficientGpe(x);
-                    var s = lcr / lcv;
+            q += s * (x ^ (m - n));
 
-                    q = q + s * (x ^ (m - n));
+            r = ((r - (lcr * (x ^ m))) - (v - lcv * (x ^ n)) * s * (x ^ (m - n))).AlgebraicExpand();
 
-                    r = ((r - (lcr * (x ^ m))) - (v - lcv * (x ^ n)) * s * (x ^ (m - n))).AlgebraicExpand();
-
-                    m = r.DegreeGpe(new List<MathObject> { x });
-                }
-
-                return (q, r);
-            }
+            m = r.DegreeGpe([x]);
         }
+
+        return (q, r);
     }
 }

@@ -1,52 +1,42 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using Symbolism.ExpandProduct;
+﻿using Symbolism.ExpandProduct;
 using Symbolism.ExpandPower;
 
-namespace Symbolism
-{
-    namespace AlgebraicExpand
-    {
-        public static class Extensions
-        {
-            public static MathObject AlgebraicExpand(this MathObject u)
-            {
-                if (u is Equation)
-                {
-                    var eq = u as Equation;
+namespace Symbolism.AlgebraicExpand;
 
+public static class Extensions
+{
+    public static MathObject AlgebraicExpand(this MathObject u)
+    {
+        switch (u)
+        {
+            case Equation eq:
+                {
                     return eq.a.AlgebraicExpand() == eq.b.AlgebraicExpand();
                 }
 
-                if (u is Sum)
-                    return (u as Sum).Map(elt => elt.AlgebraicExpand());
-                
-                if (u is Product)
+            case Sum s:
+                return s.Map(elt => elt.AlgebraicExpand());
+            case Product p:
                 {
-                    var v = (u as Product).elts[0];
+                    var v = p.elts[0];
 
                     return v.AlgebraicExpand()
-                        .ExpandProduct( (u / v).AlgebraicExpand() );
+                        .ExpandProduct((u / v).AlgebraicExpand());
                 }
 
-                if (u is Power)
+            case Power p:
                 {
-                    var bas = (u as Power).bas;
-                    var exp = (u as Power).exp;
+                    var bas = p.bas;
+                    var exp = p.exp;
 
-                    if (exp is Integer && (exp as Integer).val >= 2)
-                        return bas.AlgebraicExpand().ExpandPower((exp as Integer).val);
-                    else 
+                    if (exp is Integer i && i.val >= 2)
+                        return bas.AlgebraicExpand().ExpandPower(i.val);
+                    else
                         return u;
                 }
-                                
-                if (u is Function)
-                {
-                    var u_ = u as Function;
 
+            case Function u_:
+                {
                     return new Function(
                         u_.name,
                         u_.proc,
@@ -54,9 +44,8 @@ namespace Symbolism
                     .Simplify();
                 }
 
+            default:
                 return u;
-            }
         }
     }
-    
 }

@@ -1,30 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using Symbolism.AlgebraicExpand;
+﻿using Symbolism.AlgebraicExpand;
 using Symbolism.RationalizeExpression;
 
-namespace Symbolism
+namespace Symbolism.RationalExpand;
+
+public static class Extensions
 {
-    namespace RationalExpand
+    public static MathObject RationalExpand(this MathObject u)
     {
-        public static class Extensions
-        {
-            public static MathObject RationalExpand(this MathObject u)
-            {
-                var f = u.Numerator().AlgebraicExpand();
-                var g = u.Denominator().AlgebraicExpand();
+        var f = u.Numerator().AlgebraicExpand();
+        var g = u.Denominator().AlgebraicExpand();
 
-                if (g == 0) return false;
+        if (g == 0) return false;
 
-                var h = (f / g).RationalizeExpression();
+        var h = (f / g).RationalizeExpression();
 
-                if (h == u) return u;
+        if (h == u) return u;
 
-                return h.RationalExpand();
-            }
-        }
+        return h.RationalExpand();
     }
 }
